@@ -1,5 +1,7 @@
 # agent-harness-evals
 
+**Live matrix: https://alloevil.github.io/agent-harness-evals/**
+
 Unified, continuously-updated evaluation data across **models**, **agent harnesses**, and **tools** — one schema, live sources.
 
 Not another benchmark. This is an aggregation and reconciliation layer over benchmarks that already exist: it fetches live leaderboard data, normalizes model / scaffold / score semantics into one record schema, and produces views no single leaderboard offers — starting with the **model × harness matrix** (same model, different harness).
@@ -21,7 +23,7 @@ Run:
 
 ```bash
 pip install requests pandas pyarrow tabulate
-python src/fetch.py && python src/normalize.py && python src/views_harness.py
+python src/fetch.py && python src/normalize.py && python src/views_harness.py && python src/build_site.py
 ```
 
 ## Record schema
