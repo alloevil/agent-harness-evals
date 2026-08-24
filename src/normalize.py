@@ -83,6 +83,7 @@ def normalize_epoch(src: Path = RAW_DIR / "epoch") -> pd.DataFrame:
             "source_link": df.get("Source Link", df.get("Log viewer", "")),
         })
         out = out.dropna(subset=["score"])
+        out = out[out["model_raw"].notna() & (out["model"] != "") & (out["model"] != "nan")]
         # Scale heuristic: 0-100 percent scales -> 0-1. Non-rate metrics
         # (e.g. vending_bench dollars) stay raw, flagged via score_unit.
         mx = out["score"].max()

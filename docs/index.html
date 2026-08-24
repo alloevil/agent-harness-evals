@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>agent-harness-evals — same model, different harness</title>
+<meta name="description" content="Model x agent-harness benchmark matrix from live leaderboard data. Same model, different harness: unified evaluation data across models, agent harnesses, and tools.">
+<style>
+:root { --bg:#0d1117; --fg:#e6edf3; --dim:#8b949e; --line:#21262d; --accent:#58a6ff; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--fg);
+  font:15px/1.5 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+main { max-width:1200px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+h1 { font-size:1.6rem; margin:0 0 .25rem; }
+h1 a { color:inherit; text-decoration:none; }
+.sub { color:var(--dim); margin:0 0 1.5rem; }
+.stats { display:flex; gap:2rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+.stats div b { font-size:1.4rem; display:block; }
+.stats div span { color:var(--dim); font-size:.85rem; }
+nav { display:flex; gap:.5rem; margin-bottom:1rem; flex-wrap:wrap; }
+nav button { background:var(--line); color:var(--fg); border:1px solid var(--line);
+  border-radius:6px; padding:.4rem .9rem; cursor:pointer; font-size:.9rem; }
+nav button.on { background:var(--accent); color:#0d1117; font-weight:600; }
+.wrap { overflow-x:auto; border:1px solid var(--line); border-radius:8px; }
+table { border-collapse:collapse; width:100%; font-size:.85rem; white-space:nowrap; }
+th,td { padding:.35rem .6rem; border-bottom:1px solid var(--line); text-align:right; }
+th { position:sticky; top:0; background:var(--bg); }
+th:first-child,td:first-child { text-align:left; position:sticky; left:0;
+  background:var(--bg); font-weight:600; max-width:220px; overflow:hidden; text-overflow:ellipsis; }
+td.v { color:#0d1117; font-variant-numeric:tabular-nums; font-weight:600; }
+td.na { color:var(--line); text-align:center; }
+td.spread { color:var(--accent); font-weight:700; border-left:1px solid var(--line); }
+.note { color:var(--dim); font-size:.85rem; margin:.75rem 0 0; }
+footer { color:var(--dim); font-size:.85rem; margin-top:2rem; }
+footer a { color:var(--accent); }
+</style>
+</head>
+<body>
+<main>
+<h1><a href="https://github.com/alloevil/agent-harness-evals">agent-harness-evals</a></h1>
+<p class="sub">Same model, different harness — unified benchmark data across models, agent harnesses, and tools. Best score per (model, harness) pair; only models measured under ≥2 harnesses.</p>
+<div class="stats" id="stats"></div>
+<nav id="tabs"></nav>
+<div class="wrap"><table id="matrix"></table></div>
+<p class="note">Cell color: green = high within this benchmark, red = low. <b>spread</b> = max−min across harnesses for that model — the part of the score the harness controls.</p>
+<footer>Data: <a href="https://epoch.ai/benchmarks">Epoch AI Benchmarking Hub</a> (CC-BY, mirrors Terminal-Bench &amp; OSWorld agent×model leaderboards) · updated <span id="upd"></span> · <a href="https://github.com/alloevil/agent-harness-evals">source &amp; pipeline</a></footer>
+</main>
+<script id="data" type="application/json">{"updated":"2026-08-24","totals":{"records":2440,"benchmarks":27,"models":36,"harnesses":58},"benchmarks":{"os_world":{"harnesses":["claude-3-7-sonnet-20250219 (100 steps)","computer-use-preview (100 steps)","qwen2.5-vl-72b-instruct (100 steps)","o3 (50 steps)","o3 (15 steps)","o3 (100 steps)","computer-use-preview (50 steps)","computer-use-preview (15 steps)","claude-sonnet-4-5-20250929 (50 steps)","claude-3-7-sonnet-20250219 (15 steps)","claude-sonnet-4-5-20250929 (15 steps)","claude-sonnet-4-5-20250929 (100 steps)","claude-4-sonnet-20250514 (50 steps)","claude-4-sonnet-20250514 (15 steps)","claude-4-sonnet-20250514 (100 steps)","claude-3-7-sonnet-20250219 (50 steps)","qwen2.5-vl-72b-instruct (15 steps)"],"models":["claude-sonnet-4-5-20250929","claude-sonnet-4-20250514","claude-3-7-sonnet-20250219","computer-use-preview-2025-03-11","o3-2025-04-16","Qwen2.5-VL-72B-Instruct"],"rows":[[null,null,null,null,null,null,null,null,0.581,null,0.429,0.629,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,0.439,0.312,0.414,null,null],[0.356,null,null,null,null,null,null,null,null,0.271,null,null,null,null,null,0.358,null],[null,0.305,null,null,null,null,0.313,0.26,null,null,null,null,null,null,null,null,null],[null,null,null,0.172,0.091,0.23,null,null,null,null,null,null,null,null,null,null,null],[null,null,0.05,null,null,null,null,null,null,null,null,null,null,null,null,null,0.044]]},"terminalbench":{"harnesses":["Terminus 2","Mini-SWE-Agent","OpenHands","Codex CLI","Droid","Crux","Gemini CLI","Claude Code","Mux","spoox-o-m","Letta Code","Goose","Terminus-KIRA","Capy","SageAgent","MAYA-V2","IndusAGI Coding Agent","TongAgents","ForgeCode","CodeBrain-1","CodeBrain-1.5","spoox-m","cchuter","OpenCode","Simple Codex","clnkr","grok-cli","hookele","Ante","NexAU-AHE","Meta-Harness","MAYA","CAMEL-AI","II-Agent","Harness Agent","Grok CLI","Forge Code","Dakou Agent","Codex","Codelia","Junie CLI"],"models":["gpt-5.5","gemini-3.1-pro-preview","claude-opus-4-6","gpt-5.3-codex","gemini-3-pro-preview","gpt-5.2-2025-12-11","gemini-3-flash-preview","claude-opus-4-5-20251101","gpt-5.1-codex-mini","gpt-5.1-codex","grok-4-20","gpt-5-2025-08-07","claude-sonnet-4-5-20250929","MiniMax-M2.7","gpt-5-codex","MiniMax-M2.5","claude-opus-4-1-20250805","MiniMax-M2.1","claude-haiku-4-5-20251001","gpt-5-mini-2025-08-07","glm-4.7","gemini-2.5-pro","Kimi-K2-Instruct","grok-4-0709","Qwen3-Coder-480B-A35B-Instruct","grok-code-fast-1","gpt-5-nano-2025-08-07","gpt-oss-120b","gemini-2.5-flash-preview-09-2025","gemini-2.5-flash","gpt-oss-20b"],"rows":[[null,null,null,0.82,null,null,null,null,null,null,null,null,null,0.831,null,null,null,null,null,null,null,null,null,null,null,0.661,null,null,null,0.847,null,null,null,null,null,null,null,null,0.82,null,null],[null,null,null,null,null,null,0.614,null,null,null,null,null,0.748,null,null,null,null,0.802,0.784,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.784,null,null,null,null],[0.629,null,null,null,0.699,0.669,null,0.58,0.665,null,null,null,0.747,0.753,null,0.721,null,0.719,0.798,null,null,null,null,null,null,null,null,null,null,null,0.764,null,null,null,null,null,null,null,null,null,null],[0.647,null,null,null,0.773,null,null,null,0.746,0.715,null,null,null,null,0.784,null,0.691,null,null,0.703,0.758,null,null,null,0.751,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.757,null],[0.542,null,null,null,0.611,null,null,null,null,null,0.56,null,null,null,0.652,null,null,null,null,0.622,0.622,null,null,null,null,null,null,null,0.694,null,null,null,null,0.618,null,null,null,null,null,null,null],[0.54,null,null,0.629,0.649,null,null,null,0.607,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.517,null,null,null,null,null,0.51,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.643],[0.578,null,0.519,null,0.631,null,null,0.521,0.584,null,0.591,0.543,null,null,null,null,null,null,null,null,null,null,null,0.517,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,0.431,null,0.431,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.616,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.369,null,null,0.578,null,0.578,null,null,null,null,0.535,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.573,null,null,null,null,null,null,null,null,0.573,null,null,null,null,null],[0.352,0.339,0.438,0.496,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.428,0.425,0.426,null,null,null,null,0.401,null,null,null,0.431,null,null,null,0.427,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.427,0.465,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.451,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.429,null,null,null,null,null,null],[0.434,0.413,null,0.443,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.422,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.427,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.38,0.351,0.369,null,null,null,null,0.348,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.292,null,null,null,null,0.366,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.283,0.298,0.139,null,null,null,null,0.275,null,null,null,0.355,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.24,0.222,0.292,0.319,null,null,null,null,null,0.348,null,null,null,null,null,null,null,null,null,null,null,0.348,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.334,null,null,null,null,0.333,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.326,0.261,0.164,null,null,null,0.196,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.278,null,0.267,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.231,0.254,0.272,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.239,null,0.254,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.272,null,null,null],[0.142,0.258,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.079,0.07,0.099,0.115,null,null,null,null,null,0.218,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.187,0.142,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.169,0.171,0.164,null,null,null,0.154,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.169,0.171,0.164,null,null,null,0.154,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.031,0.034,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]]}}}</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+document.getElementById('upd').textContent = D.updated;
+const S = D.totals;
+document.getElementById('stats').innerHTML =
+  `<div><b>${S.records.toLocaleString()}</b><span>records</span></div>`+
+  `<div><b>${S.benchmarks}</b><span>benchmarks</span></div>`+
+  `<div><b>${S.models}</b><span>models under multiple harnesses</span></div>`+
+  `<div><b>${S.harnesses}</b><span>harnesses</span></div>`;
+const names = Object.keys(D.benchmarks);
+const tabs = document.getElementById('tabs');
+names.forEach((n,i) => {
+  const b = document.createElement('button');
+  b.textContent = n; b.onclick = () => show(n);
+  b.id = 'tab-'+n; tabs.appendChild(b);
+});
+function heat(v, lo, hi) {
+  const t = hi > lo ? (v-lo)/(hi-lo) : .5;
+  return `hsl(${Math.round(t*120)},65%,${55-t*10}%)`;
+}
+function show(name) {
+  names.forEach(n => document.getElementById('tab-'+n).classList.toggle('on', n===name));
+  const b = D.benchmarks[name];
+  const flat = b.rows.flat().filter(v => v!==null);
+  const lo = Math.min(...flat), hi = Math.max(...flat);
+  let h = '<thead><tr><th>model</th>' +
+    b.harnesses.map(x=>`<th>${x}</th>`).join('') + '<th>spread</th></tr></thead><tbody>';
+  b.models.forEach((m,i) => {
+    const row = b.rows[i], vals = row.filter(v=>v!==null);
+    const spread = (Math.max(...vals)-Math.min(...vals)).toFixed(3);
+    h += `<tr><td title="${m}">${m}</td>` + row.map(v =>
+      v===null ? '<td class="na">·</td>'
+               : `<td class="v" style="background:${heat(v,lo,hi)}">${v.toFixed(3)}</td>`
+    ).join('') + `<td class="spread">${spread}</td></tr>`;
+  });
+  document.getElementById('matrix').innerHTML = h + '</tbody>';
+}
+show(names.includes('terminalbench') ? 'terminalbench' : names[0]);
+</script>
+</body>
+</html>
