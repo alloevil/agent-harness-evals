@@ -55,13 +55,14 @@ Follows the reconciliation model of [Messier](https://arxiv.org/abs/2607.25891) 
 |---|---|---|---|
 | [Epoch Benchmarking Hub](https://epoch.ai/benchmarks) | models + harnesses (Terminal-Bench, frontiercode, posttrainbench, btf3 agent×model boards) | ~daily | live |
 | [HAL](https://hal.cs.princeton.edu/) | harness×model×cost across 9 benchmarks (26k rollouts) | snapshot, paused | imported |
-| [Messier corpus](https://arxiv.org/abs/2607.25891) | historical task/verifier-level backfill (960k trials) | snapshot | planned |
+| [Messier corpus](https://arxiv.org/abs/2607.25891) | task/verifier-level harness corpus (960k trials, 205 scaffolds, 31 benchmarks) | snapshot | pending release |
 
 ## Status & limitations
 
 - **Two harness sources.** Terminal-Bench (via Epoch) is the only *live*, machine-readable harness leaderboard. HAL adds a second, *historical* harness dimension — its leaderboard score tables are public HTML (only the traces are encrypted), covering 9 benchmarks with a different harness set (SWE-Agent, Browser-Use, CORE-Agent, …). SWE-bench pins a single harness (mini-swe-agent), so its official board is a model ranking, not a harness matrix.
 - **Scores are aggregates, not trials.** Upstream publishes benchmark-level scores; `spread` is computed from those, with a per-model `n` and `stderr` where reported. n<3 spreads are dimmed.
 - **Tool-layer comparisons** (tool A vs tool B under a fixed agent) have no public data source yet and are out of scope until one exists.
+- **Messier is not yet downloadable.** The Messier paper (arXiv, still in anonymous review) and its code are public, but the dataset is only referenced as a "companion dataset" — no public download URL exists in the paper or its repo. Importing it is blocked on the paper's de-anonymized release, not on this repo.
 
 ## License
 
