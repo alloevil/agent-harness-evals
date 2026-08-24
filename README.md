@@ -53,11 +53,15 @@ Follows the reconciliation model of [Messier](https://arxiv.org/abs/2607.25891) 
 
 | source | layer | cadence | status |
 |---|---|---|---|
-| [Epoch Benchmarking Hub](https://epoch.ai/benchmarks) | models + harnesses (mirrors Terminal-Bench & OSWorld agent×model boards) | ~daily | live |
+| [Epoch Benchmarking Hub](https://epoch.ai/benchmarks) | models + harnesses (mirrors Terminal-Bench agent×model board) | ~daily | live |
 | [Messier corpus](https://arxiv.org/abs/2607.25891) | historical task/verifier-level backfill (960k trials) | snapshot | planned |
-| SWE-bench / BFCL official | per-benchmark cross-check | on release | planned |
+| [HAL](https://hal.cs.princeton.edu/) | harness×model×cost across 9 benchmarks (26k rollouts) | snapshot, paused | planned |
 
-Tool-layer comparisons (tool A vs tool B under a fixed agent) have no public data source yet and are out of scope until one exists.
+## Status & limitations
+
+- **Harness dimension has one live source.** Terminal-Bench is currently the only leaderboard that is continuously updated, machine-readable, and records the harness. SWE-bench pins a single harness (mini-swe-agent), so its official board is a model ranking, not a harness matrix; HAL records harnesses but has paused new submissions and encrypts its traces. When that ecosystem changes, this repo adds the source — it does not invent harness data.
+- **Scores are aggregates, not trials.** Upstream publishes benchmark-level scores; `spread` is computed from those, with a per-model `n` and `stderr` where reported. n<3 spreads are dimmed.
+- **Tool-layer comparisons** (tool A vs tool B under a fixed agent) have no public data source yet and are out of scope until one exists.
 
 ## License
 
