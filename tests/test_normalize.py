@@ -25,13 +25,49 @@ def test_parse_pct_handles_confidence_intervals():
 
 @pytest.mark.parametrize("raw,expected", [
     ("gpt-5.3-codex", "gpt-5.3-codex"),
-    ("claude-opus-4-6_unknown", "claude-opus-4-6"),
+    ("claude-opus-4-6_unknown", "claude-opus-4.6"),
     ("gemini-3.1-pro_max", "gemini-3.1-pro"),
     ("deepseek-v4_128K", "deepseek-v4"),
     ("gpt-5-mini_medium", "gpt-5-mini"),
 ])
 def test_canon_model_strips_release_suffix(raw, expected):
     assert canon_model(raw) == expected
+
+
+@pytest.mark.parametrize("raw,expected", [
+    # snapshot dates are presentation, not identity
+    ("claude-sonnet-4-5-20250929", "claude-sonnet-4.5"),
+    ("claude-opus-4-1-20250805", "claude-opus-4.1"),
+    ("gpt-5-2025-08-07", "gpt-5"),
+    # provider prefixes and case
+    ("deepseek/deepseek-v3.2", "deepseek-v3.2"),
+    ("Kimi-K2-Instruct", "kimi-k2-instruct"),
+    # claude dash-versions unify with HAL's dot form
+    ("claude-3-5-sonnet-20241022", "claude-3.5-sonnet"),
+    # date-like tails that are NOT snapshot dates stay put
+    ("gemini-2.5-flash-preview-09-2025", "gemini-2.5-flash-preview-09-2025"),
+    ("gemini-2.0-flash-001", "gemini-2.0-flash-001"),
+])
+def test_canon_model_cross_source_identity(raw, expected):
+    assert canon_model(raw) == expected
+
+
+def test_hal_and_epoch_ids_join():
+    # The whole point of unification: the same model from both sources
+    # must land on one id, or the cross-source matrix falls apart.
+    assert canon_hal_model("Claude Sonnet 4.5 High (September 2025)") == \
+        canon_model("claude-sonnet-4-5-20250929_unknown")
+
+
+def test_canon_hal_scaffold_strips_badges():
+    from normalize import canon_hal_scaffold
+    assert canon_hal_scaffold("SWE-Agent  Pareto optimal") == "SWE-Agent"
+    assert canon_hal_scaffold(
+        "Claude Code  Submitted by Nicholas Carlini  Download main.py"
+    ) == "Claude Code"
+    # single-space names survive untouched
+    assert canon_hal_scaffold("HAL Generalist Agent") == "HAL Generalist Agent"
+    assert canon_hal_scaffold("USACO Episodic + Semantic") == "USACO Episodic + Semantic"
 
 
 # --- scaffold (harness) reconciliation ---------------------------------------

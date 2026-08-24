@@ -42,10 +42,28 @@ _ALIAS_EXACT, _ALIAS_RE = _load_aliases()
 # _xhigh, _128K, ...). Keep reasoning-effort levels distinct? No: for cross-
 # harness comparison the base model is the unit; effort level goes to model_raw.
 _SUFFIX = re.compile(r"_(unknown|medium|low|high|xhigh|max|mini|\d+K)$")
+# Snapshot-date suffixes: -20250929 (Anthropic style), -2025-08-07 (OpenAI style).
+_DATE_SUFFIX = re.compile(r"-20\d{2}(-?\d{2}){2}$")
+# Claude version pairs use dashes in API ids (sonnet-4-5) but dots everywhere
+# else (Sonnet 4.5). Dot form is the cross-source canonical.
+_CLAUDE_VER = re.compile(r"^(claude(?:-[a-z]+)*-\d)-(\d)")
 
 
 def canon_model(raw: str) -> str:
-    return _SUFFIX.sub("", str(raw).strip())
+    """One model id across every source, so HAL and Epoch rows join.
+
+    'claude-sonnet-4-5-20250929' == 'Claude Sonnet 4.5 High (September 2025)'
+    == 'claude-sonnet-4.5'. Effort levels, snapshot dates, and provider
+    prefixes are presentation, not identity; the original stays in model_raw.
+    """
+    s = str(raw).strip()
+    s = s.split("/")[-1]          # 'deepseek/deepseek-v3.2' -> 'deepseek-v3.2'
+    s = s.replace(" ", "-")       # 'composer 2.5' -> 'composer-2.5'
+    s = _SUFFIX.sub("", s)
+    s = _DATE_SUFFIX.sub("", s)
+    s = s.lower()
+    s = _CLAUDE_VER.sub(r"\1.\2", s)
+    return s
 
 
 def canon_scaffold(raw) -> str:
@@ -79,10 +97,18 @@ def rescale(scores: pd.Series, stderr: "pd.Series | None" = None) -> tuple[pd.Se
 
 
 _HARNESS_COLS = ("Agent", "Harness", "Scaffold")
+# Ordered by preference: the first matching column is the benchmark's primary
+# metric. Aggregate/overall columns come before per-subset ones.
 _SCORE_COLS = (
     "Accuracy mean", "mean_score", "Best score (across scorers)", "Score",
     "Main score", "Pass@1", "Pooled score", "Average score", "Average (%)",
     "Mean capability", "Score OPT@1",
+    # second wave — columns observed in the ~40 Epoch CSVs the first list missed
+    "Accuracy", "Overall score", "Overall accuracy", "Mean score",
+    "Pass@1 score", "% Score", "Score (AVG@5)", "Overall score (AVG@5)",
+    "Unguided % Solved", "Binary accuracy", "Overall pass (%)",
+    "Challenge score", "average_score", "Overall Elo", "Arena Score",
+    "Dominance", "Win Rate (%)", "EM", "Global average", "Overall (no subtitles)",
 )
 
 
@@ -118,6 +144,10 @@ def normalize_epoch(src: Path = RAW_DIR / "epoch") -> pd.DataFrame:
         hcol = _harness_col(df)
         score_col = next((c for c in _SCORE_COLS if c in df.columns), None)
         if score_col is None:
+            # Loud, not silent: a dropped file is lost coverage. If upstream
+            # adds a benchmark with a new score column name, this line is the
+            # only place the gap becomes visible.
+            print(f"WARN no score column for {csv.name}; columns: {list(df.columns)[:8]}")
             continue
 
         out = pd.DataFrame({
@@ -152,6 +182,11 @@ def normalize_epoch(src: Path = RAW_DIR / "epoch") -> pd.DataFrame:
 
 _HAL_EFFORT = re.compile(r"\s+(High|Medium|Low)\s*$")
 _HAL_DATE = re.compile(r"\s*\(.*\)\s*$")
+# HAL renders badge/metadata text into the agent cell ("SWE-Agent  Pareto
+# optimal", "Claude Code  Submitted by …  Download main.py"), joined by
+# multiple spaces; harness names themselves only ever use single spaces.
+_HAL_APPENDAGE = re.compile(r"\s{2,}.*$")
+_HAL_BADGE = re.compile(r"\s*\b(Pareto optimal|Best accuracy|Lowest cost)\b\s*$", re.IGNORECASE)
 _PCT = re.compile(r"([\d.]+)%")
 
 
@@ -159,7 +194,14 @@ def canon_hal_model(raw: str) -> str:
     """'Claude Sonnet 4.5 High (September 2025)' -> 'claude-sonnet-4.5'."""
     s = _HAL_DATE.sub("", str(raw).strip())
     s = _HAL_EFFORT.sub("", s)
-    return s.lower().replace(" ", "-")
+    # Through the shared canon so HAL and Epoch rows land on the same id.
+    return canon_model(s.lower().replace(" ", "-"))
+
+
+def canon_hal_scaffold(raw) -> str:
+    s = _HAL_APPENDAGE.sub("", str(raw).strip())
+    s = _HAL_BADGE.sub("", s)
+    return canon_scaffold(s)
 
 
 def parse_pct(x) -> "float | None":
@@ -186,7 +228,7 @@ def normalize_hal(src: Path = RAW_DIR / "hal") -> pd.DataFrame:
             "benchmark": bench,
             "model": t.iloc[:, 2].map(canon_hal_model),
             "model_raw": t.iloc[:, 2],
-            "scaffold": t.iloc[:, 1].map(lambda x: str(x).strip()),
+            "scaffold": t.iloc[:, 1].map(canon_hal_scaffold),
             "score": t.iloc[:, 4].map(parse_pct),
             "score_unit": "rate",
             "stderr": None,
@@ -204,6 +246,15 @@ def normalize_all() -> pd.DataFrame:
     """Run every source builder and write the unified parquet."""
     parts = [normalize_epoch(), normalize_hal()]
     records = pd.concat([p for p in parts if not p.empty], ignore_index=True)
+    # Cross-source metadata fill: HAL rows carry no release date or org, but
+    # after model-id unification the same model usually appears in an Epoch
+    # file that does. Identity earns the metadata.
+    for col in ("release_date", "org"):
+        known = (records[records[col].astype(str).str.len() > 0]
+                 .groupby("model")[col].first())
+        blank = records[col].astype(str).str.len() == 0
+        records.loc[blank, col] = records.loc[blank, "model"].map(known)
+        records[col] = records[col].fillna("")
     CLEAN_DIR.mkdir(parents=True, exist_ok=True)
     dest = CLEAN_DIR / "records.parquet"
     records.to_parquet(dest, index=False)
