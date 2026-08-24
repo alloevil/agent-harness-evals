@@ -56,6 +56,11 @@ TEMPLATE = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>agent-harness-evals — same model, different harness</title>
 <meta name="description" content="Model x agent-harness benchmark matrix from live leaderboard data. Same model, different harness: unified evaluation data across models, agent harnesses, and tools.">
+<meta property="og:title" content="agent-harness-evals — same model, different harness">
+<meta property="og:description" content="The model x harness matrix model leaderboards hide. Live benchmark data across models, agent harnesses, and tools.">
+<meta property="og:image" content="https://github.com/alloevil/agent-harness-evals/raw/master/assets/readme/og.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <style>
 :root { --bg:#0d1117; --fg:#e6edf3; --dim:#8b949e; --line:#21262d; --accent:#58a6ff; }
 * { box-sizing:border-box; }
@@ -68,10 +73,15 @@ h1 a { color:inherit; text-decoration:none; }
 .stats { display:flex; gap:2rem; margin-bottom:1.5rem; flex-wrap:wrap; }
 .stats div b { font-size:1.4rem; display:block; }
 .stats div span { color:var(--dim); font-size:.85rem; }
-nav { display:flex; gap:.5rem; margin-bottom:1rem; flex-wrap:wrap; }
+nav { display:flex; gap:.5rem; flex-wrap:wrap; }
 nav button { background:var(--line); color:var(--fg); border:1px solid var(--line);
   border-radius:6px; padding:.4rem .9rem; cursor:pointer; font-size:.9rem; }
 nav button.on { background:var(--accent); color:#0d1117; font-weight:600; }
+.controls { display:flex; align-items:center; justify-content:space-between; gap:.5rem;
+  margin-bottom:1rem; flex-wrap:wrap; }
+#search { background:var(--line); color:var(--fg); border:1px solid var(--line);
+  border-radius:6px; padding:.4rem .6rem; font-size:.9rem; width:100%; max-width:300px; }
+#search::placeholder { color:var(--dim); }
 .wrap { overflow-x:auto; border:1px solid var(--line); border-radius:8px; }
 table { border-collapse:collapse; width:100%; font-size:.85rem; white-space:nowrap; }
 th,td { padding:.35rem .6rem; border-bottom:1px solid var(--line); text-align:right; }
@@ -92,7 +102,10 @@ footer a { color:var(--accent); }
 <h1><a href="https://github.com/alloevil/agent-harness-evals">agent-harness-evals</a></h1>
 <p class="sub">Same model, different harness — unified benchmark data across models, agent harnesses, and tools. Best score per (model, harness) pair; only models measured under ≥2 harnesses.</p>
 <div class="stats" id="stats"></div>
-<nav id="tabs"></nav>
+<div class="controls">
+  <nav id="tabs"></nav>
+  <input id="search" type="search" placeholder="Filter models…" aria-label="Filter models">
+</div>
 <div class="wrap"><table id="matrix"></table></div>
 <p class="note">Cell color: green = high within this benchmark, red = low. <b>spread</b> = max−min across harnesses for that model; <b>n</b> = harnesses measured. Spread with <b>n&nbsp;&lt;&nbsp;3</b> is a single pairwise difference — shown dimmed, read with care.</p>
 <footer>Data: <a href="https://epoch.ai/benchmarks">Epoch AI Benchmarking Hub</a> (CC-BY, mirrors Terminal-Bench &amp; OSWorld agent×model leaderboards) · updated <span id="upd"></span> · <a href="trend.html">trend</a> · <a href="https://github.com/alloevil/agent-harness-evals">source &amp; pipeline</a></footer>
@@ -103,8 +116,7 @@ const D = JSON.parse(document.getElementById('data').textContent);
 document.getElementById('upd').textContent = D.updated;
 const S = D.totals;
 document.getElementById('stats').innerHTML =
-  `<div><b>${S.records.toLocaleString()}</b><span>records</span></div>`+
-  `<div><b>${S.benchmarks}</b><span>benchmarks</span></div>`+
+  `<div><b>${S.records.toLocaleString()}</b><span>records · ${S.benchmarks} benchmarks</span></div>`+
   `<div><b>${S.models}</b><span>models under multiple harnesses</span></div>`+
   `<div><b>${S.harnesses}</b><span>harnesses</span></div>`;
 const names = Object.keys(D.benchmarks);
@@ -118,8 +130,16 @@ function heat(v, lo, hi) {
   const t = hi > lo ? (v-lo)/(hi-lo) : .5;
   return `hsl(${Math.round(t*120)},65%,${55-t*10}%)`;
 }
+function filterRows() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  document.querySelectorAll('#matrix tbody tr').forEach(tr => {
+    const m = tr.querySelector('td').textContent.toLowerCase();
+    tr.style.display = (q && !m.includes(q)) ? 'none' : '';
+  });
+}
 function show(name) {
   names.forEach(n => document.getElementById('tab-'+n).classList.toggle('on', n===name));
+  history.replaceState(null, '', '#'+name);
   const b = D.benchmarks[name];
   const flat = b.rows.flat().filter(v => v!==null);
   const lo = Math.min(...flat), hi = Math.max(...flat);
@@ -136,8 +156,11 @@ function show(name) {
     ).join('') + `<td class="spread${rel}">${spread}</td><td>${n}</td></tr>`;
   });
   document.getElementById('matrix').innerHTML = h + '</tbody>';
+  filterRows();
 }
-show(names.includes('terminalbench') ? 'terminalbench' : names[0]);
+document.getElementById('search').addEventListener('input', filterRows);
+const init = decodeURIComponent(location.hash.slice(1));
+show(names.includes(init) ? init : (names.includes('terminalbench') ? 'terminalbench' : names[0]));
 </script>
 </body>
 </html>

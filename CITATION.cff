@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this dataset, please cite it as below."
+title: "agent-harness-evals"
+type: dataset
+abstract: >-
+  A continuously-updated aggregation and reconciliation layer over AI
+  evaluation leaderboards, exposing the model x harness matrix that model-only
+  leaderboards hide. Data fetched from the Epoch AI Benchmarking Hub (CC-BY),
+  normalized into a unified (benchmark, model, scaffold, score) schema.
+authors:
+  - name: "agent-harness-evals contributors"
+license: MIT
+keywords:
+  - agent evaluation
+  - harness
+  - benchmark
+  - model leaderboard
+  - reconciliation
+repository-code: "https://github.com/alloevil/agent-harness-evals"
+url: "https://alloevil.github.io/agent-harness-evals/"
