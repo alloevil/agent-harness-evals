@@ -1,0 +1,30 @@
+# Harness (scaffold) name reconciliation.
+#
+# Upstream leaderboards spell the same harness differently, and some record a
+# model+budget string in the scaffold slot instead of a harness name. This maps
+# raw scaffold strings to a canonical harness id. Unlisted names pass through
+# with whitespace stripped.
+#
+# Format:
+#   canonical_name:
+#     - raw alias
+#     - raw alias
+#
+# `regex:` entries are matched (search, case-insensitive) after exact aliases
+# miss; the first match wins. Use for families that only differ by a numeric
+# budget suffix, where the budget is not a distinct harness.
+
+aliases:
+  ForgeCode:
+    - Forge Code
+  Grok CLI:
+    - grok-cli
+  Codex CLI:
+    - Codex
+
+# OSWorld records "<model> (N steps)" in the scaffold column: that is a step
+# budget under one generic computer-use agent, not a named harness. Collapse to
+# a single "computer-use (N-step)" family so it does not masquerade as many
+# distinct harnesses inflating the count.
+regex:
+  "computer-use": '^(computer-use-preview|o3|claude-[\d.-]+sonnet[\w-]*|claude-3-7-sonnet[\w-]*|claude-4-sonnet[\w-]*|qwen2\.5-vl[\w-]*) \(\d+ steps\)$'

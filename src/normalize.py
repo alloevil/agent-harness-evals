@@ -19,9 +19,24 @@ import re
 from pathlib import Path
 
 import pandas as pd
+import yaml
 
 RAW_DIR = Path(__file__).resolve().parent.parent / "data" / "raw"
 CLEAN_DIR = Path(__file__).resolve().parent.parent / "data" / "clean"
+_ALIAS_FILE = Path(__file__).resolve().parent / "harness_aliases.yaml"
+
+
+def _load_aliases() -> tuple[dict[str, str], list[tuple[str, "re.Pattern"]]]:
+    spec = yaml.safe_load(_ALIAS_FILE.read_text())
+    exact = {alias.strip(): canon
+             for canon, al in (spec.get("aliases") or {}).items()
+             for alias in al}
+    patterns = [(canon, re.compile(rx, re.IGNORECASE))
+                for canon, rx in (spec.get("regex") or {}).items()]
+    return exact, patterns
+
+
+_ALIAS_EXACT, _ALIAS_RE = _load_aliases()
 
 # Release-config suffixes Epoch appends to model ids (_unknown, _medium, _max,
 # _xhigh, _128K, ...). Keep reasoning-effort levels distinct? No: for cross-
@@ -36,7 +51,13 @@ def canon_model(raw: str) -> str:
 def canon_scaffold(raw) -> str:
     if pd.isna(raw):
         return ""
-    return str(raw).strip()
+    s = str(raw).strip()
+    if s in _ALIAS_EXACT:
+        return _ALIAS_EXACT[s]
+    for canon, pat in _ALIAS_RE:
+        if pat.search(s):
+            return canon
+    return s
 
 
 def normalize_epoch(src: Path = RAW_DIR / "epoch") -> pd.DataFrame:

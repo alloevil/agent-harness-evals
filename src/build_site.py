@@ -35,6 +35,7 @@ def build_payload() -> dict:
         benches[bench] = {
             "harnesses": list(matrix.columns),
             "models": list(matrix.index),
+            "n": matrix.notna().sum(axis=1).tolist(),
             "rows": [[None if pd.isna(v) else round(float(v), 3) for v in row]
                      for row in matrix.to_numpy()],
         }
@@ -80,6 +81,7 @@ th:first-child,td:first-child { text-align:left; position:sticky; left:0;
 td.v { color:#0d1117; font-variant-numeric:tabular-nums; font-weight:600; }
 td.na { color:var(--line); text-align:center; }
 td.spread { color:var(--accent); font-weight:700; border-left:1px solid var(--line); }
+td.spread.na { color:var(--dim); font-weight:400; }
 .note { color:var(--dim); font-size:.85rem; margin:.75rem 0 0; }
 footer { color:var(--dim); font-size:.85rem; margin-top:2rem; }
 footer a { color:var(--accent); }
@@ -92,7 +94,7 @@ footer a { color:var(--accent); }
 <div class="stats" id="stats"></div>
 <nav id="tabs"></nav>
 <div class="wrap"><table id="matrix"></table></div>
-<p class="note">Cell color: green = high within this benchmark, red = low. <b>spread</b> = max−min across harnesses for that model — the part of the score the harness controls.</p>
+<p class="note">Cell color: green = high within this benchmark, red = low. <b>spread</b> = max−min across harnesses for that model; <b>n</b> = harnesses measured. Spread with <b>n&nbsp;&lt;&nbsp;3</b> is a single pairwise difference — shown dimmed, read with care.</p>
 <footer>Data: <a href="https://epoch.ai/benchmarks">Epoch AI Benchmarking Hub</a> (CC-BY, mirrors Terminal-Bench &amp; OSWorld agent×model leaderboards) · updated <span id="upd"></span> · <a href="https://github.com/alloevil/agent-harness-evals">source &amp; pipeline</a></footer>
 </main>
 <script id="data" type="application/json">__DATA__</script>
@@ -122,14 +124,16 @@ function show(name) {
   const flat = b.rows.flat().filter(v => v!==null);
   const lo = Math.min(...flat), hi = Math.max(...flat);
   let h = '<thead><tr><th>model</th>' +
-    b.harnesses.map(x=>`<th>${x}</th>`).join('') + '<th>spread</th></tr></thead><tbody>';
+    b.harnesses.map(x=>`<th>${x}</th>`).join('') + '<th>spread</th><th>n</th></tr></thead><tbody>';
   b.models.forEach((m,i) => {
     const row = b.rows[i], vals = row.filter(v=>v!==null);
+    const n = b.n[i];
     const spread = (Math.max(...vals)-Math.min(...vals)).toFixed(3);
+    const rel = n >= 3 ? '' : ' na';  // n=2 spread is a single difference
     h += `<tr><td title="${m}">${m}</td>` + row.map(v =>
       v===null ? '<td class="na">·</td>'
                : `<td class="v" style="background:${heat(v,lo,hi)}">${v.toFixed(3)}</td>`
-    ).join('') + `<td class="spread">${spread}</td></tr>`;
+    ).join('') + `<td class="spread${rel}">${spread}</td><td>${n}</td></tr>`;
   });
   document.getElementById('matrix').innerHTML = h + '</tbody>';
 }

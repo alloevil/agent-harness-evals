@@ -38,19 +38,31 @@ def harness_matrices(min_harnesses: int = 2) -> dict[str, pd.DataFrame]:
         # order: models by their best score, harnesses by coverage
         matrix = matrix.loc[matrix.max(axis=1).sort_values(ascending=False).index]
         matrix = matrix[matrix.notna().sum().sort_values(ascending=False).index]
+        n = matrix.notna().sum(axis=1)
         matrix["spread"] = matrix.max(axis=1) - matrix.min(axis=1)
+        matrix["n"] = n  # harnesses this model was measured under
 
         matrix.to_csv(VIEWS / f"harness_matrix_{bench}.csv")
+        # Median spread is only meaningful where a model has enough harness
+        # datapoints; a 2-harness spread is a single difference, not a spread.
+        reliable = matrix[matrix["n"] >= 3]["spread"]
+        note = (f"median spread {reliable.median():.3f} over "
+                f"{len(reliable)} models with ≥3 harnesses"
+                if len(reliable) else "no model has ≥3 harnesses yet")
         (VIEWS / f"harness_matrix_{bench}.md").write_text(
             f"# {bench}: same model, different harness\n\n"
-            f"Best score per (model, harness) pair; `spread` = max−min across "
-            f"harnesses for that model.\n\n"
+            f"Best score per (model, harness) pair. `spread` = max−min across "
+            f"harnesses for that model; `n` = harnesses measured. "
+            f"Spread with `n=2` is a single pairwise difference — read with care.\n\n"
+            f"**{note}.**\n\n"
             + matrix.round(3).to_markdown()
             + "\n"
         )
         out[bench] = matrix
-        print(f"{bench}: {matrix.shape[0]} models x {matrix.shape[1]-1} harnesses, "
-              f"median spread {matrix['spread'].median():.3f}")
+        rel = matrix[matrix["n"] >= 3]["spread"]
+        print(f"{bench}: {matrix.shape[0]} models x {matrix.shape[1]-2} harnesses, "
+              + (f"median spread {rel.median():.3f} (n≥3, {len(rel)} models)"
+                 if len(rel) else "no n≥3 models"))
     return out
 
 

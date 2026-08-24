@@ -1,7 +1,2 @@
-model,claude-3-7-sonnet-20250219 (100 steps),computer-use-preview (100 steps),qwen2.5-vl-72b-instruct (100 steps),o3 (50 steps),o3 (15 steps),o3 (100 steps),computer-use-preview (50 steps),computer-use-preview (15 steps),claude-sonnet-4-5-20250929 (50 steps),claude-3-7-sonnet-20250219 (15 steps),claude-sonnet-4-5-20250929 (15 steps),claude-sonnet-4-5-20250929 (100 steps),claude-4-sonnet-20250514 (50 steps),claude-4-sonnet-20250514 (15 steps),claude-4-sonnet-20250514 (100 steps),claude-3-7-sonnet-20250219 (50 steps),qwen2.5-vl-72b-instruct (15 steps),spread
-claude-sonnet-4-5-20250929,,,,,,,,,0.581,,0.429,0.629,,,,,,0.2
-claude-sonnet-4-20250514,,,,,,,,,,,,,0.439,0.312,0.414,,,0.127
-claude-3-7-sonnet-20250219,0.35600000000000004,,,,,,,,,0.271,,,,,,0.358,,0.08699999999999997
-computer-use-preview-2025-03-11,,0.305,,,,,0.313,0.26,,,,,,,,,,0.05299999999999999
-o3-2025-04-16,,,,0.172,0.091,0.23,,,,,,,,,,,,0.139
-Qwen2.5-VL-72B-Instruct,,,0.05,,,,,,,,,,,,,,0.044000000000000004,0.005999999999999998
+model,claude-sonnet-4-5-20250929 (100 steps),claude-sonnet-4-5-20250929 (15 steps),claude-sonnet-4-5-20250929 (50 steps),spread,n
+claude-sonnet-4-5-20250929,0.629,0.429,0.581,0.2,3
