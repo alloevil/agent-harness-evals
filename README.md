@@ -53,7 +53,7 @@ Follows the reconciliation model of [Messier](https://arxiv.org/abs/2607.25891) 
 
 | source | layer | cadence | status |
 |---|---|---|---|
-| [Epoch Benchmarking Hub](https://epoch.ai/benchmarks) | models + harnesses (mirrors Terminal-Bench agent×model board) | ~daily | live |
+| [Epoch Benchmarking Hub](https://epoch.ai/benchmarks) | models + harnesses (Terminal-Bench, frontiercode, posttrainbench, btf3 agent×model boards) | ~daily | live |
 | [HAL](https://hal.cs.princeton.edu/) | harness×model×cost across 9 benchmarks (26k rollouts) | snapshot, paused | imported |
 | [Messier corpus](https://arxiv.org/abs/2607.25891) | historical task/verifier-level backfill (960k trials) | snapshot | planned |
 

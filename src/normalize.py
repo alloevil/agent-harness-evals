@@ -78,6 +78,26 @@ def rescale(scores: pd.Series, stderr: "pd.Series | None" = None) -> tuple[pd.Se
     return scores, stderr, "rate"
 
 
+_HARNESS_COLS = ("Agent", "Harness", "Scaffold")
+_SCORE_COLS = (
+    "Accuracy mean", "mean_score", "Best score (across scorers)", "Score",
+    "Main score", "Pass@1", "Pooled score", "Average score", "Average (%)",
+    "Mean capability", "Score OPT@1",
+)
+
+
+def _harness_col(df: pd.DataFrame) -> "str | None":
+    """Find the harness/scaffold column. Skip boolean pseudo-harness columns
+    (deepresearchbench's `Agent` column is a True/False flag, not names)."""
+    for c in _HARNESS_COLS:
+        if c in df.columns:
+            vals = df[c].dropna()
+            if vals.map(type).eq(bool).all() and vals.nunique() <= 2:
+                continue
+            return c
+    return None
+
+
 def normalize_epoch(src: Path = RAW_DIR / "epoch") -> pd.DataFrame:
     """Flatten every Epoch per-benchmark CSV into unified records.
 
@@ -95,14 +115,8 @@ def normalize_epoch(src: Path = RAW_DIR / "epoch") -> pd.DataFrame:
         except Exception as e:  # malformed upstream file: skip, don't die
             print(f"skip {csv.name}: {e}")
             continue
-        if "Model version" not in df.columns:
-            continue
-
-        score_col = next(
-            (c for c in ("Accuracy mean", "mean_score", "Best score (across scorers)", "Score")
-             if c in df.columns),
-            None,
-        )
+        hcol = _harness_col(df)
+        score_col = next((c for c in _SCORE_COLS if c in df.columns), None)
         if score_col is None:
             continue
 
@@ -110,7 +124,7 @@ def normalize_epoch(src: Path = RAW_DIR / "epoch") -> pd.DataFrame:
             "benchmark": bench,
             "model": df["Model version"].map(canon_model),
             "model_raw": df["Model version"],
-            "scaffold": df["Agent"].map(canon_scaffold) if "Agent" in df.columns else "",
+            "scaffold": df[hcol].map(canon_scaffold) if hcol else "",
             "score": pd.to_numeric(df[score_col], errors="coerce"),
             "stderr": pd.to_numeric(
                 df.get("Accuracy SE", df.get("stderr", pd.Series(dtype=float))),
