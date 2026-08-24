@@ -32,10 +32,13 @@ def build_payload() -> dict:
         matrix = cell.pivot(index="model", columns="scaffold", values="score")
         matrix = matrix.loc[matrix.max(axis=1).sort_values(ascending=False).index]
         matrix = matrix[matrix.notna().sum().sort_values(ascending=False).index]
+        released = grp.groupby("model")["release_date"].first()
         benches[bench] = {
             "harnesses": list(matrix.columns),
             "models": list(matrix.index),
             "n": matrix.notna().sum(axis=1).tolist(),
+            "released": {m: (None if pd.isna(d) else str(d)[:10])
+                         for m, d in released.items()},
             "rows": [[None if pd.isna(v) else round(float(v), 3) for v in row]
                      for row in matrix.to_numpy()],
         }
@@ -82,6 +85,16 @@ nav button.on { background:var(--accent); color:#0d1117; font-weight:600; }
 #search { background:var(--line); color:var(--fg); border:1px solid var(--line);
   border-radius:6px; padding:.4rem .6rem; font-size:.9rem; width:100%; max-width:300px; }
 #search::placeholder { color:var(--dim); }
+.ctl { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+#sort { background:var(--line); color:var(--fg); border:1px solid var(--line);
+  border-radius:6px; padding:.4rem .6rem; font-size:.9rem; }
+.about { border:1px solid var(--line); border-radius:8px; padding:.5rem .8rem;
+  margin:0 0 1rem; color:var(--dim); font-size:.88rem; }
+.about summary { cursor:pointer; color:var(--fg); font-weight:600; }
+.about p { margin:.4rem 0; }
+td.released { color:var(--dim); font-variant-numeric:tabular-nums; }
+tbody tr:hover td { background:#161b22; }
+tbody tr:hover td:first-child { background:#161b22; }
 .wrap { overflow-x:auto; border:1px solid var(--line); border-radius:8px; }
 table { border-collapse:collapse; width:100%; font-size:.85rem; white-space:nowrap; }
 th,td { padding:.35rem .6rem; border-bottom:1px solid var(--line); text-align:right; }
@@ -104,8 +117,20 @@ footer a { color:var(--accent); }
 <div class="stats" id="stats"></div>
 <div class="controls">
   <nav id="tabs"></nav>
-  <input id="search" type="search" placeholder="Filter models…" aria-label="Filter models">
+  <div class="ctl">
+    <select id="sort" aria-label="Sort models">
+      <option value="released">Latest models first</option>
+      <option value="score">Best score first</option>
+    </select>
+    <input id="search" type="search" placeholder="Filter models…" aria-label="Filter models">
+  </div>
 </div>
+<details class="about" open>
+  <summary>About this data</summary>
+  <p><b>Source:</b> Epoch AI Benchmarking Hub (CC-BY), mirroring the Terminal-Bench agent×model leaderboard — updated <span id="about-upd"></span>.</p>
+  <p><b>Reading a cell:</b> best pass rate for a (model × harness) pair. <b>spread</b> = max−min across harnesses for that model — the score difference the harness controls. <b>n</b> = harnesses measured; spread with n&nbsp;&lt;&nbsp;3 is dimmed (a single pairwise difference, not a spread).</p>
+  <p><b>Order:</b> latest model release first by default; switch to best-score to see the ranking.</p>
+</details>
 <div class="wrap"><table id="matrix"></table></div>
 <p class="note">Cell color: green = high within this benchmark, red = low. <b>spread</b> = max−min across harnesses for that model; <b>n</b> = harnesses measured. Spread with <b>n&nbsp;&lt;&nbsp;3</b> is a single pairwise difference — shown dimmed, read with care.</p>
 <footer>Data: <a href="https://epoch.ai/benchmarks">Epoch AI Benchmarking Hub</a> (CC-BY, mirrors Terminal-Bench &amp; OSWorld agent×model leaderboards) · updated <span id="upd"></span> · <a href="trend.html">trend</a> · <a href="https://github.com/alloevil/agent-harness-evals">source &amp; pipeline</a></footer>
@@ -114,6 +139,7 @@ footer a { color:var(--accent); }
 <script>
 const D = JSON.parse(document.getElementById('data').textContent);
 document.getElementById('upd').textContent = D.updated;
+document.getElementById('about-upd').textContent = D.updated;
 const S = D.totals;
 document.getElementById('stats').innerHTML =
   `<div><b>${S.records.toLocaleString()}</b><span>records · ${S.benchmarks} benchmarks</span></div>`+
@@ -137,20 +163,33 @@ function filterRows() {
     tr.style.display = (q && !m.includes(q)) ? 'none' : '';
   });
 }
+let sortMode = 'released', curName = '';
 function show(name) {
+  curName = name;
   names.forEach(n => document.getElementById('tab-'+n).classList.toggle('on', n===name));
   history.replaceState(null, '', '#'+name);
   const b = D.benchmarks[name];
+  const idx = b.models.map((_, i) => i);
+  if (sortMode === 'released') {
+    idx.sort((a, c) => {
+      const ra = b.released[b.models[a]] || '', rc = b.released[b.models[c]] || '';
+      if (ra === rc) return 0;
+      if (!ra) return 1;   // missing dates last
+      if (!rc) return -1;
+      return ra < rc ? 1 : -1;  // newest first
+    });
+  }
   const flat = b.rows.flat().filter(v => v!==null);
   const lo = Math.min(...flat), hi = Math.max(...flat);
-  let h = '<thead><tr><th>model</th>' +
+  let h = '<thead><tr><th>model</th><th>released</th>' +
     b.harnesses.map(x=>`<th>${x}</th>`).join('') + '<th>spread</th><th>n</th></tr></thead><tbody>';
-  b.models.forEach((m,i) => {
-    const row = b.rows[i], vals = row.filter(v=>v!==null);
+  idx.forEach(i => {
+    const m = b.models[i], row = b.rows[i], vals = row.filter(v=>v!==null);
     const n = b.n[i];
     const spread = (Math.max(...vals)-Math.min(...vals)).toFixed(3);
-    const rel = n >= 3 ? '' : ' na';  // n=2 spread is a single difference
-    h += `<tr><td title="${m}">${m}</td>` + row.map(v =>
+    const rel = n >= 3 ? '' : ' na';
+    const rd = b.released[m] || '';
+    h += `<tr><td title="${m}">${m}</td><td class="released">${rd}</td>` + row.map(v =>
       v===null ? '<td class="na">·</td>'
                : `<td class="v" style="background:${heat(v,lo,hi)}">${v.toFixed(3)}</td>`
     ).join('') + `<td class="spread${rel}">${spread}</td><td>${n}</td></tr>`;
@@ -158,6 +197,7 @@ function show(name) {
   document.getElementById('matrix').innerHTML = h + '</tbody>';
   filterRows();
 }
+document.getElementById('sort').addEventListener('change', e => { sortMode = e.target.value; show(curName); });
 document.getElementById('search').addEventListener('input', filterRows);
 const init = decodeURIComponent(location.hash.slice(1));
 show(names.includes(init) ? init : (names.includes('terminalbench') ? 'terminalbench' : names[0]));
