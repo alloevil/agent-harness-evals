@@ -11,97 +11,157 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-:root { --bg:#0d1117; --fg:#e6edf3; --dim:#8b949e; --line:#21262d; --accent:#58a6ff; }
+:root { --bg:#0d1117; --fg:#e6edf3; --dim:#8b949e; --line:#21262d; --line2:#30363d;
+  --accent:#58a6ff; --card:#161b22; --ink-on-light:#0b1220; }
 * { box-sizing:border-box; }
 body { margin:0; background:var(--bg); color:var(--fg);
   font:15px/1.5 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
 main { max-width:1200px; margin:0 auto; padding:2rem 1.5rem 4rem; }
 h1 { font-size:1.6rem; margin:0 0 .25rem; }
 h1 a { color:inherit; text-decoration:none; }
-.sub { color:var(--dim); margin:0 0 1.5rem; }
-.stats { display:flex; gap:2rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+.sub { color:var(--dim); margin:0 0 1.25rem; }
+.stats { display:flex; gap:2rem; margin-bottom:1.25rem; flex-wrap:wrap; }
 .stats div b { font-size:1.4rem; display:block; }
 .stats div span { color:var(--dim); font-size:.85rem; }
-nav { display:flex; gap:.5rem; flex-wrap:wrap; }
+nav { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1rem; }
 nav button { background:var(--line); color:var(--fg); border:1px solid var(--line);
   border-radius:6px; padding:.4rem .9rem; cursor:pointer; font-size:.9rem; }
 nav button.on { background:var(--accent); color:#0d1117; font-weight:600; }
-.controls { display:flex; align-items:center; justify-content:space-between; gap:.5rem;
-  margin-bottom:1rem; flex-wrap:wrap; }
-#search { background:var(--line); color:var(--fg); border:1px solid var(--line);
-  border-radius:6px; padding:.4rem .6rem; font-size:.9rem; width:100%; max-width:300px; }
-#search::placeholder { color:var(--dim); }
+.bench-head { margin:0 0 .75rem; }
+.bench-head h2 { font-size:1.15rem; margin:0; display:inline; }
+.bench-head a { color:var(--accent); text-decoration:none; font-size:.85rem; margin-left:.5rem; }
+.bench-head p { color:var(--dim); margin:.15rem 0 0; font-size:.9rem; }
+.tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:.75rem; margin:0 0 1rem; }
+.tile { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.6rem .8rem; }
+.tile .k { color:var(--dim); font-size:.75rem; text-transform:uppercase; letter-spacing:.04em; }
+.tile .v { font-size:1.15rem; font-weight:700; margin-top:.1rem; overflow:hidden; text-overflow:ellipsis; }
+.tile .d { color:var(--dim); font-size:.8rem; }
+.controls { display:flex; align-items:center; justify-content:space-between; gap:.6rem;
+  margin-bottom:.75rem; flex-wrap:wrap; }
+.views { display:flex; gap:.4rem; }
+.views button { background:transparent; color:var(--dim); border:1px solid var(--line2);
+  border-radius:6px; padding:.35rem .8rem; cursor:pointer; font-size:.88rem; }
+.views button.on { color:var(--fg); background:var(--line); border-color:var(--line2); font-weight:600; }
 .ctl { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
-#sort { background:var(--line); color:var(--fg); border:1px solid var(--line);
+.ctl label { color:var(--dim); font-size:.82rem; display:flex; gap:.3rem; align-items:center; cursor:pointer; }
+#search, #sort { background:var(--line); color:var(--fg); border:1px solid var(--line);
   border-radius:6px; padding:.4rem .6rem; font-size:.9rem; }
+#search { width:100%; max-width:240px; }
+#search::placeholder { color:var(--dim); }
 .about { border:1px solid var(--line); border-radius:8px; padding:.5rem .8rem;
   margin:0 0 1rem; color:var(--dim); font-size:.88rem; }
 .about summary { cursor:pointer; color:var(--fg); font-weight:600; }
 .about p { margin:.4rem 0; }
-td.released { color:var(--dim); font-variant-numeric:tabular-nums; }
-tbody tr:hover td { background:#161b22; }
-tbody tr:hover td:first-child { background:#161b22; }
 .wrap { overflow-x:auto; border:1px solid var(--line); border-radius:8px; }
 table { border-collapse:collapse; width:100%; font-size:.85rem; white-space:nowrap; }
 th,td { padding:.35rem .6rem; border-bottom:1px solid var(--line); text-align:right; }
-th { position:sticky; top:0; background:var(--bg); }
-th:first-child,td:first-child { text-align:left; position:sticky; left:0;
-  background:var(--bg); font-weight:600; max-width:220px; overflow:hidden; text-overflow:ellipsis; }
-td.v { color:#0d1117; font-variant-numeric:tabular-nums; font-weight:600; }
-td.na { color:var(--line); text-align:center; }
+th { position:sticky; top:0; background:var(--bg); z-index:2; }
+th:first-child,td:first-child { text-align:left; position:sticky; left:0; z-index:1;
+  background:var(--bg); font-weight:600; max-width:230px; overflow:hidden; text-overflow:ellipsis; }
+th:first-child { z-index:3; }
+tbody tr:hover td { background:var(--card); }
+td.released { color:var(--dim); font-variant-numeric:tabular-nums; }
+td.v { font-variant-numeric:tabular-nums; font-weight:600; }
+td.v.best { box-shadow:inset 0 0 0 2px rgba(255,255,255,.85); font-weight:800; }
+td.na { color:var(--line2); text-align:center; }
 td.spread { color:var(--accent); font-weight:700; border-left:1px solid var(--line); }
-td.spread.na { color:var(--dim); font-weight:400; }
+td.spread.na2 { color:var(--dim); font-weight:400; }
+.bar { display:inline-block; height:10px; border-radius:0 4px 4px 0; background:#3987e5;
+  vertical-align:middle; margin-right:.5rem; }
+.bar.dim { background:#484f58; }
+td.barcell { text-align:left; min-width:220px; }
 .note { color:var(--dim); font-size:.85rem; margin:.75rem 0 0; }
 footer { color:var(--dim); font-size:.85rem; margin-top:2rem; }
 footer a { color:var(--accent); }
+@media (max-width:640px){ .tiles{grid-template-columns:1fr 1fr;} }
 </style>
 </head>
 <body>
 <main>
 <h1><a href="https://github.com/alloevil/agent-harness-evals">agent-harness-evals</a></h1>
-<p class="sub">Same model, different harness — unified benchmark data across models, agent harnesses, and tools. Best score per (model, harness) pair; only models measured under ≥2 harnesses.</p>
+<p class="sub">Same model, different harness — which agent harness gets the most out of each model, from live leaderboard data.</p>
 <div class="stats" id="stats"></div>
+<nav id="tabs"></nav>
+<div class="bench-head" id="bench-head"></div>
+<div class="tiles" id="tiles"></div>
 <div class="controls">
-  <nav id="tabs"></nav>
+  <div class="views" id="views">
+    <button data-v="matrix">Matrix</button>
+    <button data-v="harness">Harness ranking</button>
+    <button data-v="model">Model ranking</button>
+  </div>
   <div class="ctl">
+    <label id="allh-label"><input type="checkbox" id="allh"> single-model harnesses</label>
     <select id="sort" aria-label="Sort models">
-      <option value="released">Latest models first</option>
       <option value="score">Best score first</option>
+      <option value="released">Latest models first</option>
     </select>
     <input id="search" type="search" placeholder="Filter models…" aria-label="Filter models">
   </div>
 </div>
-<details class="about" open>
-  <summary>About this data</summary>
-  <p><b>Sources:</b> Epoch AI Benchmarking Hub (CC-BY, Terminal-Bench agent×model board) and the <a href="https://hal.cs.princeton.edu/">HAL</a> Holistic Agent Leaderboard (harness×model×cost, historical) — updated <span id="about-upd"></span>.</p>
-  <p><b>Reading a cell:</b> best pass rate for a (model × harness) pair. <b>spread</b> = max−min across harnesses for that model — the score difference the harness controls. <b>n</b> = harnesses measured; spread with n&nbsp;&lt;&nbsp;3 is dimmed (a single pairwise difference, not a spread).</p>
-  <p><b>Order:</b> latest model release first by default; switch to best-score to see the ranking.</p>
+<details class="about">
+  <summary>How to read this</summary>
+  <p><b>Matrix:</b> best pass rate per (model × harness) pair; brighter blue = higher within this benchmark; the white-ringed cell is that model's best harness. <b>spread</b> = max−min across harnesses for that model — the score difference the harness alone controls (dimmed when n&nbsp;&lt;&nbsp;3: a single pairwise difference, not a spread).</p>
+  <p><b>Harness ranking:</b> "% of model-best" = averaged over the models a harness was tested with, the share of each model's best-known score it retains. 100% = it was the best choice for every model tested. <b>wins</b> = models for which it was the top harness. Rows with fewer than 3 models are dimmed.</p>
+  <p><b>Model ranking:</b> each model's best score across harnesses, and which harness got it there.</p>
+  <p><b>Sources:</b> <a href="https://epoch.ai/benchmarks">Epoch AI Benchmarking Hub</a> (CC-BY, live, ~daily) and the <a href="https://hal.cs.princeton.edu/">HAL</a> Holistic Agent Leaderboard (historical). Only models measured under ≥2 harnesses appear.</p>
 </details>
 <div class="wrap"><table id="matrix"></table></div>
-<p class="note">Cell color: green = high within this benchmark, red = low. <b>spread</b> = max−min across harnesses for that model; <b>n</b> = harnesses measured. Spread with <b>n&nbsp;&lt;&nbsp;3</b> is a single pairwise difference — shown dimmed, read with care.</p>
+<p class="note" id="viewnote"></p>
 <footer>Data: <a href="https://epoch.ai/benchmarks">Epoch AI Benchmarking Hub</a> (CC-BY) + <a href="https://hal.cs.princeton.edu/">HAL</a> · updated <span id="upd"></span> · <a href="trend.html">trend</a> · <a href="https://github.com/alloevil/agent-harness-evals">source &amp; pipeline</a></footer>
 </main>
-<script id="data" type="application/json">{"updated":"2026-08-24","totals":{"records":2911,"benchmarks":43,"models":47,"harnesses":59},"benchmarks":{"btf3":{"harnesses":["FutureSearch agent","Vendor agent SDK"],"models":["gpt-5.5","claude-opus-4-8"],"n":[2,2],"released":{"claude-fable-5":"2026-06-09","claude-opus-4-8":"2026-05-28","claude-opus-5":"2026-07-24","claude-sonnet-5":"2026-06-30","gpt-5.5":"2026-04-23","gpt-5.6-sol":"2026-07-09"},"rows":[[0.143,0.134],[0.14,0.137]]},"hal_assistantbench":{"harnesses":["Browser-Use","Browser-Use  Pareto optimal"],"models":["o4-mini"],"n":[2],"released":{"claude-3.7-sonnet":"","claude-opus-4.1":"","claude-sonnet-4.5":"","deepseek-r1":"","deepseek-v3":"","gemini-2.0-flash":"","gpt-4.1":"","gpt-5":"","o3":"","o4-mini":""},"rows":[[0.238,0.281]]},"hal_corebench_hard":{"harnesses":["CORE-Agent","HAL Generalist Agent","Claude Code  Submitted by Nicholas Carlini  Download main.py","Claude Code  Submitted by Nicholas Carlini  Download main.py  Pareto optimal","HAL Generalist Agent  Pareto optimal"],"models":["claude-opus-4.5","claude-sonnet-4.5","claude-opus-4.1","claude-sonnet-4","gemini-3-pro-preview","claude-3.7-sonnet","o4-mini","gpt-4.1","gpt-5","o3","gemini-2.5-pro-preview","deepseek-v3","gemini-2.0-flash","gpt-oss-120b","deepseek-r1"],"n":[3,3,3,2,2,2,2,2,2,2,2,2,2,3,2],"released":{"claude-3.7-sonnet":"","claude-haiku-4.5":"","claude-opus-4.1":"","claude-opus-4.5":"","claude-sonnet-4":"","claude-sonnet-4.5":"","deepseek-r1":"","deepseek-v3":"","deepseek-v3.1":"","gemini-2.0-flash":"","gemini-2.5-pro-preview":"","gemini-3-pro-preview":"","gpt-4.1":"","gpt-5":"","gpt-oss-120b":"","o3":"","o4-mini":""},"rows":[[0.422,0.333,null,0.778,null],[0.444,0.333,0.622,null,null],[0.511,0.356,0.422,null,null],[0.333,null,0.467,null,null],[0.4,0.356,null,null,null],[0.356,0.378,null,null,null],[0.267,0.356,null,null,null],[0.333,0.222,null,null,null],[0.267,0.111,null,null,null],[0.244,0.222,null,null,null],[0.222,0.044,null,null,null],[0.178,0.089,null,null,null],[0.111,0.044,null,null,null],[0.111,0.089,null,null,0.089],[0.067,0.089,null,null,null]]},"hal_gaia":{"harnesses":["HF Open Deep Research","HAL Generalist Agent","HAL Generalist Agent  Pareto optimal"],"models":["claude-sonnet-4.5","claude-opus-4.1","claude-opus-4","claude-3.7-sonnet","gpt-5","o4-mini","gpt-4.1","gemini-2.0-flash","o3","deepseek-r1","deepseek-v3"],"n":[3,2,2,2,2,2,2,2,2,2,2],"released":{"claude-3.7-sonnet":"","claude-haiku-4.5":"","claude-opus-4":"","claude-opus-4.1":"","claude-sonnet-4.5":"","deepseek-r1":"","deepseek-v3":"","gemini-2.0-flash":"","gpt-4.1":"","gpt-5":"","o3":"","o4-mini":""},"rows":[[0.309,0.709,0.745],[0.285,0.685,null],[0.576,0.648,null],[0.37,0.642,null],[0.628,0.594,null],[0.558,null,0.582],[0.503,0.497,null],[0.194,null,0.327],[0.327,0.285,null],[0.249,0.303,null],[0.285,0.294,null]]},"hal_online_mind2web":{"harnesses":["Browser-Use","SeeAct","SeeAct  Pareto optimal","Browser-Use  Pareto optimal"],"models":["gpt-5","claude-sonnet-4","claude-3.7-sonnet","o3","gpt-4.1","o4-mini","gemini-2.0-flash"],"n":[2,2,2,2,2,2,2],"released":{"claude-3.7-sonnet":"","claude-sonnet-4":"","deepseek-r1":"","deepseek-v3":"","gemini-2.0-flash":"","gpt-4.1":"","gpt-5":"","o3":"","o4-mini":""},"rows":[[0.32,null,0.423,null],[0.4,0.367,null,null],[0.393,0.303,null,null],[0.29,0.39,null,null],[0.363,0.303,null,null],[0.2,0.32,null,null],[null,null,0.267,0.29]]},"hal_scicode":{"harnesses":["HAL Generalist Agent","Scicode Tool Calling Agent","Scicode Zero Shot Agent","Scicode Zero Shot Agent  Pareto optimal"],"models":["o3","o4-mini","gpt-4.1","claude-3.7-sonnet","deepseek-v3","gemini-2.0-flash","deepseek-r1"],"n":[3,4,3,3,3,3,3],"released":{"claude-3.7-sonnet":"","claude-haiku-4.5":"","claude-opus-4.1":"","claude-sonnet-4.5":"","deepseek-r1":"","deepseek-v3":"","gemini-2.0-flash":"","gpt-4.1":"","gpt-5":"","o3":"","o4-mini":""},"rows":[[0.031,0.092,0.046,null],[0.062,0.046,0.062,0.092],[0.015,0.015,0.062,null],[0.031,0.046,0.031,null],[0.0,0.0,0.031,null],[0.0,0.015,null,0.015],[0.0,0.0,0.0,null]]},"hal_scienceagentbench":{"harnesses":["HAL Generalist Agent","SAB Self-Debug","SAB Self-Debug  Pareto optimal"],"models":["o3","claude-3.7-sonnet","claude-sonnet-4.5","o4-mini","gpt-4.1","deepseek-v3"],"n":[2,2,2,3,2,2],"released":{"claude-3.7-sonnet":"","claude-haiku-4.5":"","claude-opus-4.1":"","claude-sonnet-4.5":"","deepseek-r1":"","deepseek-v3":"","gemini-2.0-flash":"","gpt-4.1":"","gpt-5":"","o3":"","o4-mini":""},"rows":[[0.098,null,0.333],[0.176,0.304,null],[null,0.294,0.304],[0.216,0.274,0.274],[0.069,0.245,null],[0.01,0.157,null]]},"hal_swebench_verified_mini":{"harnesses":["HAL Generalist Agent","SWE-Agent","SWE-Agent  Pareto optimal","HAL Generalist Agent  Pareto optimal"],"models":["claude-sonnet-4.5","claude-opus-4.1","claude-3.7-sonnet","o4-mini","claude-opus-4","gpt-5","o3","claude-haiku-4.5","gpt-4.1","deepseek-v3","gemini-2.0-flash","deepseek-r1"],"n":[3,2,2,2,2,2,2,2,2,2,2,2],"released":{"claude-3.7-sonnet":"","claude-haiku-4.5":"","claude-opus-4":"","claude-opus-4.1":"","claude-sonnet-4.5":"","deepseek-r1":"","deepseek-v3":"","gemini-2.0-flash":"","gpt-4.1":"","gpt-5":"","o3":"","o4-mini":""},"rows":[[0.4,0.68,0.72,null],[0.46,0.61,null,null],[0.26,0.54,null,null],[0.06,0.54,null,null],[0.34,0.5,null,null],[0.12,0.46,null,null],[0.0,0.46,null,null],[0.24,null,null,0.44],[0.02,0.44,null,null],[0.1,0.24,null,null],[0.02,null,0.24,null],[0.06,0.0,null,null]]},"hal_taubench_airline":{"harnesses":["HAL Generalist Agent","TAU-bench Tool Calling","TAU-bench Tool Calling  Pareto optimal"],"models":["claude-3.7-sonnet","o4-mini","claude-opus-4.1","o3","gpt-5","deepseek-v3","deepseek-r1","gpt-4.1","gemini-2.0-flash"],"n":[2,3,2,2,2,2,2,2,2],"released":{"claude-3.7-sonnet":"","claude-opus-4":"","claude-opus-4.1":"","deepseek-r1":"","deepseek-v3":"","gemini-2.0-flash":"","gpt-4.1":"","gpt-5":"","o3":"","o4-mini":""},"rows":[[0.56,0.52,null],[0.22,0.36,0.56],[0.54,0.52,null],[0.2,0.54,null],[0.3,0.48,null],[0.18,null,0.44],[0.1,0.36,null],[0.16,0.36,null],[0.22,null,0.28]]},"hal_usaco":{"harnesses":["HAL Generalist Agent","USACO Episodic + Semantic"],"models":["gpt-4.1"],"n":[2],"released":{"claude-3.7-sonnet":"","claude-opus-4.1":"","deepseek-r1":"","deepseek-v3":"","gemini-2.0-flash":"","gpt-4.1":"","gpt-5":"","o3":"","o4-mini":""},"rows":[[0.254,0.45]]},"posttrainbench":{"harnesses":["OpenCode","Claude Code","Codex CLI","Gemini CLI"],"models":["gpt-5.1-codex-max","gemini-3-pro-preview","claude-opus-4-5-20251101"],"n":[2,2,2],"released":{"MiniMax-M2.1":"2025-12-23","MiniMax-M2.5":"2026-02-12","claude-fable-5":"2026-06-09","claude-opus-4-5-20251101":"2025-11-24","claude-opus-4-6":"2026-02-05","claude-opus-4-7":"2026-04-16","claude-opus-4-8":"2026-05-28","claude-opus-5":"2026-07-24","claude-sonnet-4-5-20250929":"2025-09-29","claude-sonnet-4-6":"2026-02-17","gemini-3-pro-preview":"2025-11-18","gemini-3.1-pro-preview":"2026-02-19","glm-4.7":"2025-12-22","glm-5":"2026-02-11","glm-5.2":"2026-06-16","gpt-5.1-codex-max":"2025-11-19","gpt-5.2-2025-12-11":"2025-12-11","gpt-5.2-2025-12-11_none":"2025-12-11","gpt-5.2-codex":"2025-12-18","gpt-5.3-codex":"2026-02-05","gpt-5.4-2026-03-05":"2026-03-05","gpt-5.5":"2026-04-23","gpt-5.6-sol":"2026-07-09","grok-4.5":"2026-07-08","kimi-k2-thinking":"2025-11-06","kimi-k2.5":"2026-01-27","kimi-k3":"2026-07-16","qwen3-max-2025-09-23":"2025-09-24"},"rows":[[0.076,null,0.197,null],[0.149,null,null,0.181],[0.173,0.171,null,null]]},"terminalbench":{"harnesses":["Terminus 2","Mini-SWE-Agent","OpenHands","Codex CLI","Gemini CLI","Claude Code","Crux","Droid","Mux","Letta Code","Goose","spoox-o-m","ForgeCode","CodeBrain-1","IndusAGI Coding Agent","TongAgents","MAYA-V2","Terminus-KIRA","Capy","CodeBrain-1.5","SageAgent","spoox-m","hookele","clnkr","cchuter","Simple Codex","NexAU-AHE","OpenCode","Dakou Agent","Codelia","Meta-Harness","MAYA","CAMEL-AI","Junie CLI","II-Agent","Harness Agent","Ante"],"models":["gpt-5.5","gemini-3.1-pro-preview","claude-opus-4-6","gpt-5.3-codex","gemini-3-pro-preview","gpt-5.2-2025-12-11","gemini-3-flash-preview","claude-opus-4-5-20251101","gpt-5.1-codex-mini","gpt-5.1-codex","gpt-5-2025-08-07","claude-sonnet-4-5-20250929","MiniMax-M2.7","gpt-5-codex","MiniMax-M2.5","claude-opus-4-1-20250805","MiniMax-M2.1","claude-haiku-4-5-20251001","gpt-5-mini-2025-08-07","glm-4.7","gemini-2.5-pro","Kimi-K2-Instruct","Qwen3-Coder-480B-A35B-Instruct","grok-4-0709","grok-code-fast-1","gpt-5-nano-2025-08-07","gpt-oss-120b","gemini-2.5-flash-preview-09-2025","gemini-2.5-flash","gpt-oss-20b"],"n":[4,4,11,10,8,4,3,8,3,4,4,8,2,3,2,4,2,5,6,2,4,2,3,3,2,5,2,4,4,2],"released":{"Kimi-K2-Instruct":"2025-07-12","MiniMax-M2":"2025-10-27","MiniMax-M2.1":"2025-12-23","MiniMax-M2.5":"2026-02-12","MiniMax-M2.7":"2026-03-18","Qwen3-Coder-480B-A35B-Instruct":"2025-07-31","claude-haiku-4-5-20251001":"2025-10-15","claude-opus-4-1-20250805":"2025-08-05","claude-opus-4-5-20251101":"2025-11-24","claude-opus-4-6":"2026-02-05","claude-opus-4-7":"2026-04-16","claude-sonnet-4-5-20250929":"2025-09-29","claude-sonnet-4-6":"2026-02-17","deepseek/deepseek-v3.2":"2025-12-01","gemini-2.5-flash":"2025-06-17","gemini-2.5-flash-preview-09-2025":"2025-09-25","gemini-2.5-pro":"2025-06-17","gemini-3-flash-preview":"2025-12-17","gemini-3-pro-preview":"2025-11-18","gemini-3.1-pro-preview":"2026-02-19","glm-4.6":"2025-09-30","glm-4.7":"2025-12-22","glm-5":"2026-02-11","gpt-5-2025-08-07":"2025-08-07","gpt-5-codex":"2025-09-15","gpt-5-mini-2025-08-07":"2025-08-07","gpt-5-nano-2025-08-07":"2025-08-07","gpt-5.1-2025-11-13":"2025-11-13","gpt-5.1-codex":"2025-11-12","gpt-5.1-codex-max":"2025-11-19","gpt-5.1-codex-mini":"2025-11-12","gpt-5.2-2025-12-11":"2025-12-11","gpt-5.2-codex":"2025-12-18","gpt-5.3-codex":"2026-02-05","gpt-5.4-2026-03-05":"2026-03-05","gpt-5.5":"2026-04-23","gpt-oss-120b":"2025-08-05","gpt-oss-20b":"2025-08-05","grok-4-0709":"2025-07-09","grok-4-20":"2026-02-17","grok-code-fast-1":"2025-08-28","kimi-k2-thinking":"2025-11-06","kimi-k2.5":"2026-01-27","qwen3.5-9B":"2026-02-24","qwen3.6-35b-a3b":"2026-04-14"},"rows":[[null,null,null,0.82,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.831,null,null,null,null,0.661,null,null,0.847,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,0.614,null,null,null,null,null,null,null,0.784,null,null,0.802,null,0.748,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.629,null,null,null,null,0.58,0.669,0.699,0.665,null,null,null,0.798,null,null,0.719,0.721,0.747,0.753,null,null,null,null,null,null,null,null,null,null,null,0.764,null,null,null,null,null,null],[0.647,null,null,null,null,null,null,0.773,0.746,null,null,0.715,null,0.703,0.691,null,null,null,null,0.758,0.784,null,null,null,null,0.751,null,null,null,0.757,null,null,null,null,null,null,null],[0.542,null,null,null,null,null,null,0.611,null,0.56,null,null,null,0.622,null,null,null,null,null,0.622,0.652,null,null,null,null,null,null,null,null,null,null,null,null,null,0.618,null,0.694],[0.54,null,null,0.629,null,null,null,0.649,0.607,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.517,null,null,null,0.51,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.643,null,null,null],[0.578,null,0.519,null,null,0.521,null,0.631,0.584,0.591,0.543,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.517,null,null,null,null,null,null,null,null,null],[null,null,null,0.431,null,null,0.431,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.616,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.369,null,null,0.578,null,null,0.578,null,null,0.535,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.352,0.339,0.438,0.496,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.428,0.425,0.426,null,null,0.401,null,null,null,null,0.431,null,null,null,null,null,0.427,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.427,0.465,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.451,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.429,null],[0.434,0.413,null,0.443,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.422,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.427,null,null,null,null,null,null,null,null,null,null,null,null],[0.38,0.351,0.369,null,null,0.348,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.292,null,null,null,null,null,0.366,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.283,0.298,0.139,null,null,0.275,null,null,null,null,0.355,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.24,0.222,0.292,0.319,null,null,null,null,null,null,null,0.348,null,null,null,null,null,null,null,null,null,0.348,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.334,null,null,null,null,null,0.333,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.326,0.261,0.164,null,0.196,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.278,null,0.267,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.239,null,0.254,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.272,null,null,null,null,null,null,null,null],[0.231,0.254,0.272,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.142,0.258,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.079,0.07,0.099,0.115,null,null,null,null,null,null,null,0.218,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.187,0.142,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.169,0.171,0.164,null,0.154,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.169,0.171,0.164,null,0.154,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.031,0.034,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]]}}}</script>
+<script id="data" type="application/json">{"updated":"2026-08-24","totals":{"records":5018,"benchmarks":73,"models":42,"harnesses":50},"benchmarks":{"terminalbench":{"name":"Terminal-Bench","blurb":"Agentic tasks in a real shell \u2014 coding, sysadmin, data wrangling. Score = share of tasks passed.","link":"https://www.tbench.ai/","harnesses":["Terminus 2","Mini-SWE-Agent","OpenHands","Codex CLI","Gemini CLI","Claude Code","Crux","Droid","Mux","Letta Code","Goose","spoox-o-m","ForgeCode","CodeBrain-1","IndusAGI Coding Agent","TongAgents","MAYA-V2","Terminus-KIRA","Capy","CodeBrain-1.5","SageAgent","spoox-m","hookele","clnkr","cchuter","Simple Codex","NexAU-AHE","OpenCode","Dakou Agent","Codelia","Meta-Harness","MAYA","CAMEL-AI","Junie CLI","II-Agent","Harness Agent","Ante"],"hcov":[26,14,13,8,5,5,5,5,4,3,3,3,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"models":["gpt-5.5","gemini-3.1-pro-preview","claude-opus-4.6","gpt-5.3-codex","gemini-3-pro-preview","gpt-5.2","gemini-3-flash-preview","claude-opus-4.5","gpt-5.1-codex-mini","gpt-5.1-codex","gpt-5","claude-sonnet-4.5","minimax-m2.7","gpt-5-codex","minimax-m2.5","claude-opus-4.1","minimax-m2.1","claude-haiku-4.5","gpt-5-mini","glm-4.7","gemini-2.5-pro","kimi-k2-instruct","grok-4-0709","qwen3-coder-480b-a35b-instruct","grok-code-fast-1","gpt-5-nano","gpt-oss-120b","gemini-2.5-flash-preview-09-2025","gemini-2.5-flash","gpt-oss-20b"],"n":[4,4,11,10,8,4,3,8,3,4,4,8,2,3,2,4,2,5,6,2,4,2,3,3,2,5,2,4,4,2],"released":{"claude-haiku-4.5":"2025-10-15","claude-opus-4.1":"2025-08-05","claude-opus-4.5":"2025-11-24","claude-opus-4.6":"2026-02-05","claude-opus-4.7":"2026-04-16","claude-sonnet-4.5":"2025-09-29","claude-sonnet-4.6":"2026-02-17","deepseek-v3.2":"2025-12-01","gemini-2.5-flash":"2025-06-17","gemini-2.5-flash-preview-09-2025":"2025-09-25","gemini-2.5-pro":"2025-06-17","gemini-3-flash-preview":"2025-12-17","gemini-3-pro-preview":"2025-11-18","gemini-3.1-pro-preview":"2026-02-19","glm-4.6":"2025-09-30","glm-4.7":"2025-12-22","glm-5":"2026-02-11","gpt-5":"2025-08-07","gpt-5-codex":"2025-09-15","gpt-5-mini":"2025-08-07","gpt-5-nano":"2025-08-07","gpt-5.1":"2025-11-13","gpt-5.1-codex":"2025-11-12","gpt-5.1-codex-max":"2025-11-19","gpt-5.1-codex-mini":"2025-11-12","gpt-5.2":"2025-12-11","gpt-5.2-codex":"2025-12-18","gpt-5.3-codex":"2026-02-05","gpt-5.4":"2026-03-05","gpt-5.5":"2026-04-23","gpt-oss-120b":"2025-08-05","gpt-oss-20b":"2025-08-05","grok-4-0709":"2025-07-09","grok-4-20":"2026-02-17","grok-code-fast-1":"2025-08-28","kimi-k2-instruct":"2025-07-12","kimi-k2-thinking":"2025-11-06","kimi-k2.5":"2026-01-27","minimax-m2":"2025-10-27","minimax-m2.1":"2025-12-23","minimax-m2.5":"2026-02-12","minimax-m2.7":"2026-03-18","qwen3-coder-480b-a35b-instruct":"2025-07-31","qwen3.5-9b":"2026-02-24","qwen3.6-35b-a3b":"2026-04-14"},"rows":[[null,null,null,0.82,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.831,null,null,null,null,0.661,null,null,0.847,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,0.614,null,null,null,null,null,null,null,0.784,null,null,0.802,null,0.748,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.629,null,null,null,null,0.58,0.669,0.699,0.665,null,null,null,0.798,null,null,0.719,0.721,0.747,0.753,null,null,null,null,null,null,null,null,null,null,null,0.764,null,null,null,null,null,null],[0.647,null,null,null,null,null,null,0.773,0.746,null,null,0.715,null,0.703,0.691,null,null,null,null,0.758,0.784,null,null,null,null,0.751,null,null,null,0.757,null,null,null,null,null,null,null],[0.542,null,null,null,null,null,null,0.611,null,0.56,null,null,null,0.622,null,null,null,null,null,0.622,0.652,null,null,null,null,null,null,null,null,null,null,null,null,null,0.618,null,0.694],[0.54,null,null,0.629,null,null,null,0.649,0.607,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.517,null,null,null,0.51,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.643,null,null,null],[0.578,null,0.519,null,null,0.521,null,0.631,0.584,0.591,0.543,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.517,null,null,null,null,null,null,null,null,null],[null,null,null,0.431,null,null,0.431,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.616,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.369,null,null,0.578,null,null,0.578,null,null,0.535,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.352,0.339,0.438,0.496,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.428,0.425,0.426,null,null,0.401,null,null,null,null,0.431,null,null,null,null,null,0.427,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.427,0.465,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.451,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.429,null],[0.434,0.413,null,0.443,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.422,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.427,null,null,null,null,null,null,null,null,null,null,null,null],[0.38,0.351,0.369,null,null,0.348,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.292,null,null,null,null,null,0.366,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.283,0.298,0.139,null,null,0.275,null,null,null,null,0.355,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.24,0.222,0.292,0.319,null,null,null,null,null,null,null,0.348,null,null,null,null,null,null,null,null,null,0.348,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.334,null,null,null,null,null,0.333,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.326,0.261,0.164,null,0.196,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.278,null,0.267,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.231,0.254,0.272,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.239,null,0.254,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.272,null,null,null,null,null,null,null,null],[0.142,0.258,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.079,0.07,0.099,0.115,null,null,null,null,null,null,null,0.218,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.187,0.142,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.169,0.171,0.164,null,0.154,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.169,0.171,0.164,null,0.154,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[0.031,0.034,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]],"summary":{"bestCombo":["gpt-5.5","NexAU-AHE",0.847],"bestHarness":["Droid",0.948,5],"medianSpread":0.135,"spreadModels":22},"harnessRank":[["spoox-o-m",3,0.971,2],["Droid",5,0.948,2],["Goose",3,0.929,1],["Mux",4,0.911,0],["Crux",5,0.907,2],["Letta Code",3,0.89,0],["Codex CLI",8,0.885,3],["Terminus 2",26,0.846,5],["Mini-SWE-Agent",14,0.839,4],["Claude Code",5,0.821,0],["OpenHands",13,0.815,1],["Gemini CLI",5,0.792,0],["ForgeCode",2,0.989,1],["SageAgent",2,0.97,1],["Capy",2,0.962,0],["TongAgents",2,0.951,1],["IndusAGI Coding Agent",2,0.941,1],["Terminus-KIRA",2,0.934,0],["CodeBrain-1.5",2,0.932,0],["MAYA-V2",2,0.911,0],["CodeBrain-1",2,0.896,0]],"modelRank":[["gpt-5.5",0.847,"NexAU-AHE",0.186,4],["gemini-3.1-pro-preview",0.802,"TongAgents",0.188,4],["claude-opus-4.6",0.798,"ForgeCode",0.218,11],["gpt-5.3-codex",0.784,"SageAgent",0.137,10],["gemini-3-pro-preview",0.694,"Ante",0.152,8],["gpt-5.2",0.649,"Droid",0.109,4],["gemini-3-flash-preview",0.643,"Junie CLI",0.133,3],["claude-opus-4.5",0.631,"Droid",0.114,8],["gpt-5.1-codex-mini",0.616,"hookele",0.185,3],["gpt-5.1-codex",0.578,"Codex CLI",0.209,4],["gpt-5",0.496,"Codex CLI",0.157,4],["claude-sonnet-4.5",0.465,"CAMEL-AI",0.064,8],["minimax-m2.7",0.451,"IndusAGI Coding Agent",0.022,2],["gpt-5-codex",0.443,"Codex CLI",0.03,3],["minimax-m2.5",0.427,"cchuter",0.005,2],["claude-opus-4.1",0.38,"Terminus 2",0.032,4],["minimax-m2.1",0.366,"Crux",0.074,2],["claude-haiku-4.5",0.355,"Goose",0.216,5],["gpt-5-mini",0.348,"spoox-o-m",0.126,6],["glm-4.7",0.334,"Terminus 2",0.001,2],["gemini-2.5-pro",0.326,"Terminus 2",0.162,4],["kimi-k2-instruct",0.278,"Terminus 2",0.011,2],["grok-4-0709",0.272,"OpenHands",0.041,3],["qwen3-coder-480b-a35b-instruct",0.272,"Dakou Agent",0.033,3],["grok-code-fast-1",0.258,"Mini-SWE-Agent",0.116,2],["gpt-5-nano",0.218,"spoox-o-m",0.148,5],["gpt-oss-120b",0.187,"Terminus 2",0.045,2],["gemini-2.5-flash-preview-09-2025",0.171,"Mini-SWE-Agent",0.017,4],["gemini-2.5-flash",0.171,"Mini-SWE-Agent",0.017,4],["gpt-oss-20b",0.034,"Mini-SWE-Agent",0.003,2]]},"hal_corebench_hard":{"name":"CORE-Bench Hard","blurb":"Reproduce computational results from real research papers. (HAL)","link":"https://hal.cs.princeton.edu/corebench_hard","harnesses":["CORE-Agent","HAL Generalist Agent","Claude Code"],"hcov":[15,14,4],"models":["claude-opus-4.5","claude-sonnet-4.5","claude-opus-4.1","claude-sonnet-4","gemini-3-pro-preview","claude-3.7-sonnet","o4-mini","gpt-4.1","gpt-5","o3","gemini-2.5-pro-preview","deepseek-v3","gemini-2.0-flash","gpt-oss-120b","deepseek-r1"],"n":[3,3,3,2,2,2,2,2,2,2,2,2,2,2,2],"released":{"claude-3.7-sonnet":"2025-02-24","claude-haiku-4.5":"2025-10-15","claude-opus-4.1":"2025-08-05","claude-opus-4.5":"2025-11-24","claude-sonnet-4":"2025-05-22","claude-sonnet-4.5":"2025-09-29","deepseek-r1":"2025-01-20","deepseek-v3":"2024-12-26","deepseek-v3.1":"2025-08-21","gemini-2.0-flash":"","gemini-2.5-pro-preview":"","gemini-3-pro-preview":"2025-11-18","gpt-4.1":"2025-04-14","gpt-5":"2025-08-07","gpt-oss-120b":"2025-08-05","o3":"2025-04-16","o4-mini":"2025-04-16"},"rows":[[0.422,0.333,0.778],[0.444,0.333,0.622],[0.511,0.356,0.422],[0.333,null,0.467],[0.4,0.356,null],[0.356,0.378,null],[0.267,0.356,null],[0.333,0.222,null],[0.267,0.111,null],[0.244,0.222,null],[0.222,0.044,null],[0.178,0.089,null],[0.111,0.044,null],[0.111,0.089,null],[0.067,0.089,null]],"summary":{"bestCombo":["claude-opus-4.5","Claude Code",0.778],"bestHarness":["CORE-Agent",0.894,15],"medianSpread":0.289,"spreadModels":3},"harnessRank":[["Claude Code",4,0.957,3],["CORE-Agent",15,0.894,9],["HAL Generalist Agent",14,0.674,3]],"modelRank":[["claude-opus-4.5",0.778,"Claude Code",0.445,3],["claude-sonnet-4.5",0.622,"Claude Code",0.289,3],["claude-opus-4.1",0.511,"CORE-Agent",0.155,3],["claude-sonnet-4",0.467,"Claude Code",0.133,2],["gemini-3-pro-preview",0.4,"CORE-Agent",0.044,2],["claude-3.7-sonnet",0.378,"HAL Generalist Agent",0.022,2],["o4-mini",0.356,"HAL Generalist Agent",0.089,2],["gpt-4.1",0.333,"CORE-Agent",0.111,2],["gpt-5",0.267,"CORE-Agent",0.156,2],["o3",0.244,"CORE-Agent",0.022,2],["gemini-2.5-pro-preview",0.222,"CORE-Agent",0.178,2],["deepseek-v3",0.178,"CORE-Agent",0.089,2],["gemini-2.0-flash",0.111,"CORE-Agent",0.067,2],["gpt-oss-120b",0.111,"CORE-Agent",0.022,2],["deepseek-r1",0.089,"HAL Generalist Agent",0.022,2]]},"hal_gaia":{"name":"GAIA","blurb":"General-assistant questions needing web search, browsing, and tool use. (HAL)","link":"https://hal.cs.princeton.edu/gaia","harnesses":["HAL Generalist Agent","HF Open Deep Research"],"hcov":[11,11],"models":["claude-sonnet-4.5","claude-opus-4.1","claude-opus-4","claude-3.7-sonnet","gpt-5","o4-mini","gpt-4.1","gemini-2.0-flash","o3","deepseek-r1","deepseek-v3"],"n":[2,2,2,2,2,2,2,2,2,2,2],"released":{"claude-3.7-sonnet":"2025-02-24","claude-haiku-4.5":"2025-10-15","claude-opus-4":"2025-05-22","claude-opus-4.1":"2025-08-05","claude-sonnet-4.5":"2025-09-29","deepseek-r1":"2025-01-20","deepseek-v3":"2024-12-26","gemini-2.0-flash":"","gpt-4.1":"2025-04-14","gpt-5":"2025-08-07","o3":"2025-04-16","o4-mini":"2025-04-16"},"rows":[[0.745,0.309],[0.685,0.285],[0.648,0.576],[0.642,0.37],[0.594,0.628],[0.582,0.558],[0.497,0.503],[0.327,0.194],[0.285,0.327],[0.303,0.249],[0.294,0.285]],"summary":{"bestCombo":["claude-sonnet-4.5","HAL Generalist Agent",0.745],"bestHarness":["HAL Generalist Agent",0.982,11],"medianSpread":null,"spreadModels":0},"harnessRank":[["HAL Generalist Agent",11,0.982,8],["HF Open Deep Research",11,0.785,3]],"modelRank":[["claude-sonnet-4.5",0.745,"HAL Generalist Agent",0.436,2],["claude-opus-4.1",0.685,"HAL Generalist Agent",0.4,2],["claude-opus-4",0.648,"HAL Generalist Agent",0.073,2],["claude-3.7-sonnet",0.642,"HAL Generalist Agent",0.273,2],["gpt-5",0.628,"HF Open Deep Research",0.034,2],["o4-mini",0.582,"HAL Generalist Agent",0.024,2],["gpt-4.1",0.503,"HF Open Deep Research",0.006,2],["gemini-2.0-flash",0.327,"HAL Generalist Agent",0.133,2],["o3",0.327,"HF Open Deep Research",0.042,2],["deepseek-r1",0.303,"HAL Generalist Agent",0.054,2],["deepseek-v3",0.294,"HAL Generalist Agent",0.009,2]]},"hal_swebench_verified_mini":{"name":"SWE-bench Verified Mini","blurb":"50-task subset of SWE-bench Verified \u2014 fix real GitHub issues. Score = share of issues resolved. (HAL)","link":"https://hal.cs.princeton.edu/swebench_verified_mini","harnesses":["HAL Generalist Agent","SWE-Agent"],"hcov":[11,11],"models":["claude-sonnet-4.5","claude-opus-4.1","claude-3.7-sonnet","o4-mini","claude-opus-4","gpt-5","o3","gpt-4.1","deepseek-v3","gemini-2.0-flash","deepseek-r1"],"n":[2,2,2,2,2,2,2,2,2,2,2],"released":{"claude-3.7-sonnet":"2025-02-24","claude-haiku-4.5":"2025-10-15","claude-opus-4":"2025-05-22","claude-opus-4.1":"2025-08-05","claude-sonnet-4.5":"2025-09-29","deepseek-r1":"2025-01-20","deepseek-v3":"2024-12-26","gemini-2.0-flash":"","gpt-4.1":"2025-04-14","gpt-5":"2025-08-07","o3":"2025-04-16","o4-mini":"2025-04-16"},"rows":[[0.4,0.72],[0.46,0.61],[0.26,0.54],[0.06,0.54],[0.34,0.5],[0.12,0.46],[0.0,0.46],[0.02,0.44],[0.1,0.24],[0.02,0.24],[0.06,0.0]],"summary":{"bestCombo":["claude-sonnet-4.5","SWE-Agent",0.72],"bestHarness":["SWE-Agent",0.909,11],"medianSpread":null,"spreadModels":0},"harnessRank":[["SWE-Agent",11,0.909,10],["HAL Generalist Agent",11,0.399,1]],"modelRank":[["claude-sonnet-4.5",0.72,"SWE-Agent",0.32,2],["claude-opus-4.1",0.61,"SWE-Agent",0.15,2],["claude-3.7-sonnet",0.54,"SWE-Agent",0.28,2],["o4-mini",0.54,"SWE-Agent",0.48,2],["claude-opus-4",0.5,"SWE-Agent",0.16,2],["gpt-5",0.46,"SWE-Agent",0.34,2],["o3",0.46,"SWE-Agent",0.46,2],["gpt-4.1",0.44,"SWE-Agent",0.42,2],["deepseek-v3",0.24,"SWE-Agent",0.14,2],["gemini-2.0-flash",0.24,"SWE-Agent",0.22,2],["deepseek-r1",0.06,"HAL Generalist Agent",0.06,2]]},"hal_scicode":{"name":"SciCode","blurb":"Implement code for problems drawn from research-level science. (HAL)","link":"https://hal.cs.princeton.edu/scicode","harnesses":["HAL Generalist Agent","Scicode Tool Calling Agent","Scicode Zero Shot Agent"],"hcov":[7,7,7],"models":["o3","o4-mini","gpt-4.1","claude-3.7-sonnet","deepseek-v3","gemini-2.0-flash","deepseek-r1"],"n":[3,3,3,3,3,3,3],"released":{"claude-3.7-sonnet":"2025-02-24","claude-haiku-4.5":"2025-10-15","claude-opus-4.1":"2025-08-05","claude-sonnet-4.5":"2025-09-29","deepseek-r1":"2025-01-20","deepseek-v3":"2024-12-26","gemini-2.0-flash":"","gpt-4.1":"2025-04-14","gpt-5":"2025-08-07","o3":"2025-04-16","o4-mini":"2025-04-16"},"rows":[[0.031,0.092,0.046],[0.062,0.046,0.092],[0.015,0.015,0.062],[0.031,0.046,0.031],[0.0,0.0,0.031],[0.0,0.015,0.015],[0.0,0.0,0.0]],"summary":{"bestCombo":["o3","Scicode Tool Calling Agent",0.092],"bestHarness":["Scicode Zero Shot Agent",0.861,7],"medianSpread":0.031,"spreadModels":7},"harnessRank":[["Scicode Zero Shot Agent",7,0.861,4],["Scicode Tool Calling Agent",7,0.625,3],["HAL Generalist Agent",7,0.32,0]],"modelRank":[["o3",0.092,"Scicode Tool Calling Agent",0.062,3],["o4-mini",0.092,"Scicode Zero Shot Agent",0.046,3],["gpt-4.1",0.062,"Scicode Zero Shot Agent",0.046,3],["claude-3.7-sonnet",0.046,"Scicode Tool Calling Agent",0.015,3],["deepseek-v3",0.031,"Scicode Zero Shot Agent",0.031,3],["gemini-2.0-flash",0.015,"Scicode Tool Calling Agent",0.015,3],["deepseek-r1",0.0,"HAL Generalist Agent",0.0,3]]},"hal_taubench_airline":{"name":"\u03c4-bench Airline","blurb":"Customer-service dialogues with tool calls under airline policies. (HAL)","link":"https://hal.cs.princeton.edu/taubench_airline","harnesses":["HAL Generalist Agent","TAU-bench Tool Calling"],"hcov":[9,9],"models":["claude-3.7-sonnet","o4-mini","claude-opus-4.1","o3","gpt-5","deepseek-v3","deepseek-r1","gpt-4.1","gemini-2.0-flash"],"n":[2,2,2,2,2,2,2,2,2],"released":{"claude-3.7-sonnet":"2025-02-24","claude-opus-4":"2025-05-22","claude-opus-4.1":"2025-08-05","deepseek-r1":"2025-01-20","deepseek-v3":"2024-12-26","gemini-2.0-flash":"","gpt-4.1":"2025-04-14","gpt-5":"2025-08-07","o3":"2025-04-16","o4-mini":"2025-04-16"},"rows":[[0.56,0.52],[0.22,0.56],[0.54,0.52],[0.2,0.54],[0.3,0.48],[0.18,0.44],[0.1,0.36],[0.16,0.36],[0.22,0.28]],"summary":{"bestCombo":["claude-3.7-sonnet","HAL Generalist Agent",0.56],"bestHarness":["TAU-bench Tool Calling",0.988,9],"medianSpread":null,"spreadModels":0},"harnessRank":[["TAU-bench Tool Calling",9,0.988,7],["HAL Generalist Agent",9,0.589,2]],"modelRank":[["claude-3.7-sonnet",0.56,"HAL Generalist Agent",0.04,2],["o4-mini",0.56,"TAU-bench Tool Calling",0.34,2],["claude-opus-4.1",0.54,"HAL Generalist Agent",0.02,2],["o3",0.54,"TAU-bench Tool Calling",0.34,2],["gpt-5",0.48,"TAU-bench Tool Calling",0.18,2],["deepseek-v3",0.44,"TAU-bench Tool Calling",0.26,2],["deepseek-r1",0.36,"TAU-bench Tool Calling",0.26,2],["gpt-4.1",0.36,"TAU-bench Tool Calling",0.2,2],["gemini-2.0-flash",0.28,"TAU-bench Tool Calling",0.06,2]]},"hal_online_mind2web":{"name":"Online-Mind2Web","blurb":"Live website navigation tasks on the real web. (HAL)","link":"https://hal.cs.princeton.edu/online_mind2web","harnesses":["Browser-Use","SeeAct"],"hcov":[7,7],"models":["gpt-5","claude-sonnet-4","claude-3.7-sonnet","o3","gpt-4.1","o4-mini","gemini-2.0-flash"],"n":[2,2,2,2,2,2,2],"released":{"claude-3.7-sonnet":"2025-02-24","claude-sonnet-4":"2025-05-22","deepseek-r1":"2025-01-20","deepseek-v3":"2024-12-26","gemini-2.0-flash":"","gpt-4.1":"2025-04-14","gpt-5":"2025-08-07","o3":"2025-04-16","o4-mini":"2025-04-16"},"rows":[[0.32,0.423],[0.4,0.367],[0.393,0.303],[0.29,0.39],[0.363,0.303],[0.2,0.32],[0.29,0.267]],"summary":{"bestCombo":["gpt-5","SeeAct",0.423],"bestHarness":["SeeAct",0.92,7],"medianSpread":null,"spreadModels":0},"harnessRank":[["SeeAct",7,0.92,3],["Browser-Use",7,0.875,4]],"modelRank":[["gpt-5",0.423,"SeeAct",0.103,2],["claude-sonnet-4",0.4,"Browser-Use",0.033,2],["claude-3.7-sonnet",0.393,"Browser-Use",0.09,2],["o3",0.39,"SeeAct",0.1,2],["gpt-4.1",0.363,"Browser-Use",0.06,2],["o4-mini",0.32,"SeeAct",0.12,2],["gemini-2.0-flash",0.29,"Browser-Use",0.023,2]]},"posttrainbench":{"name":"PostTrainBench","blurb":"Agents fine-tune a base LLM on a target task; score reflects the post-trained model's quality.","link":"https://epoch.ai/benchmarks","harnesses":["OpenCode","Claude Code","Codex CLI","Gemini CLI"],"hcov":[3,1,1,1],"models":["gpt-5.1-codex-max","gemini-3-pro-preview","claude-opus-4.5"],"n":[2,2,2],"released":{"claude-fable-5":"2026-06-09","claude-opus-4.5":"2025-11-24","claude-opus-4.6":"2026-02-05","claude-opus-4.7":"2026-04-16","claude-opus-4.8":"2026-05-28","claude-opus-5":"2026-07-24","claude-sonnet-4.5":"2025-09-29","claude-sonnet-4.6":"2026-02-17","gemini-3-pro-preview":"2025-11-18","gemini-3.1-pro-preview":"2026-02-19","glm-4.7":"2025-12-22","glm-5":"2026-02-11","glm-5.2":"2026-06-16","gpt-5.1-codex-max":"2025-11-19","gpt-5.2":"2025-12-11","gpt-5.2-2025-12-11_none":"2025-12-11","gpt-5.2-codex":"2025-12-18","gpt-5.3-codex":"2026-02-05","gpt-5.4":"2026-03-05","gpt-5.5":"2026-04-23","gpt-5.6-sol":"2026-07-09","grok-4.5":"2026-07-08","kimi-k2-thinking":"2025-11-06","kimi-k2.5":"2026-01-27","kimi-k3":"2026-07-16","minimax-m2.1":"2025-12-23","minimax-m2.5":"2026-02-12","qwen3-max":"2025-09-24"},"rows":[[0.076,null,0.197,null],[0.149,null,null,0.181],[0.173,0.171,null,null]],"summary":{"bestCombo":["gpt-5.1-codex-max","Codex CLI",0.197],"bestHarness":["OpenCode",0.736,3],"medianSpread":null,"spreadModels":0},"harnessRank":[["OpenCode",3,0.736,1]],"modelRank":[["gpt-5.1-codex-max",0.197,"Codex CLI",0.12,2],["gemini-3-pro-preview",0.181,"Gemini CLI",0.033,2],["claude-opus-4.5",0.173,"OpenCode",0.002,2]]},"hal_scienceagentbench":{"name":"ScienceAgentBench","blurb":"Data-driven scientific-discovery tasks end to end. (HAL)","link":"https://hal.cs.princeton.edu/scienceagentbench","harnesses":["HAL Generalist Agent","SAB Self-Debug"],"hcov":[5,5],"models":["o3","claude-3.7-sonnet","o4-mini","gpt-4.1","deepseek-v3"],"n":[2,2,2,2,2],"released":{"claude-3.7-sonnet":"2025-02-24","claude-haiku-4.5":"2025-10-15","claude-opus-4.1":"2025-08-05","claude-sonnet-4.5":"2025-09-29","deepseek-r1":"2025-01-20","deepseek-v3":"2024-12-26","gemini-2.0-flash":"","gpt-4.1":"2025-04-14","gpt-5":"2025-08-07","o3":"2025-04-16","o4-mini":"2025-04-16"},"rows":[[0.098,0.333],[0.176,0.304],[0.216,0.274],[0.069,0.245],[0.01,0.157]],"summary":{"bestCombo":["o3","SAB Self-Debug",0.333],"bestHarness":["SAB Self-Debug",1.0,5],"medianSpread":null,"spreadModels":0},"harnessRank":[["SAB Self-Debug",5,1.0,5],["HAL Generalist Agent",5,0.401,0]],"modelRank":[["o3",0.333,"SAB Self-Debug",0.235,2],["claude-3.7-sonnet",0.304,"SAB Self-Debug",0.127,2],["o4-mini",0.274,"SAB Self-Debug",0.059,2],["gpt-4.1",0.245,"SAB Self-Debug",0.176,2],["deepseek-v3",0.157,"SAB Self-Debug",0.147,2]]},"btf3":{"name":"BTF3","blurb":"Epoch agent\u00d7model board. Score = share of tasks passed.","link":"https://epoch.ai/benchmarks","harnesses":["FutureSearch agent","Vendor agent SDK"],"hcov":[2,2],"models":["gpt-5.5","claude-opus-4.8"],"n":[2,2],"released":{"claude-fable-5":"2026-06-09","claude-opus-4.8":"2026-05-28","claude-opus-5":"2026-07-24","claude-sonnet-5":"2026-06-30","gpt-5.5":"2026-04-23","gpt-5.6-sol":"2026-07-09"},"rows":[[0.143,0.134],[0.14,0.137]],"summary":{"bestCombo":["gpt-5.5","FutureSearch agent",0.143],"bestHarness":["FutureSearch agent",1.0,2],"medianSpread":null,"spreadModels":0},"harnessRank":[["FutureSearch agent",2,1.0,2],["Vendor agent SDK",2,0.958,0]],"modelRank":[["gpt-5.5",0.143,"FutureSearch agent",0.009,2],["claude-opus-4.8",0.14,"FutureSearch agent",0.003,2]]},"hal_usaco":{"name":"USACO","blurb":"Olympiad competitive-programming problems. (HAL)","link":"https://hal.cs.princeton.edu/usaco","harnesses":["HAL Generalist Agent","USACO Episodic + Semantic"],"hcov":[1,1],"models":["gpt-4.1"],"n":[2],"released":{"claude-3.7-sonnet":"2025-02-24","claude-opus-4.1":"2025-08-05","deepseek-r1":"2025-01-20","deepseek-v3":"2024-12-26","gemini-2.0-flash":"","gpt-4.1":"2025-04-14","gpt-5":"2025-08-07","o3":"2025-04-16","o4-mini":"2025-04-16"},"rows":[[0.254,0.45]],"summary":{"bestCombo":["gpt-4.1","USACO Episodic + Semantic",0.45],"bestHarness":null,"medianSpread":null,"spreadModels":0},"harnessRank":[],"modelRank":[["gpt-4.1",0.45,"USACO Episodic + Semantic",0.195,2]]}}}</script>
 <script>
 const D = JSON.parse(document.getElementById('data').textContent);
 document.getElementById('upd').textContent = D.updated;
-document.getElementById('about-upd').textContent = D.updated;
 const S = D.totals;
 document.getElementById('stats').innerHTML =
   `<div><b>${S.records.toLocaleString()}</b><span>records · ${S.benchmarks} benchmarks</span></div>`+
   `<div><b>${S.models}</b><span>models under multiple harnesses</span></div>`+
-  `<div><b>${S.harnesses}</b><span>harnesses</span></div>`;
+  `<div><b>${S.harnesses}</b><span>harnesses compared</span></div>`;
 const names = Object.keys(D.benchmarks);
 const tabs = document.getElementById('tabs');
-names.forEach((n,i) => {
+names.forEach(n => {
   const b = document.createElement('button');
-  b.textContent = n; b.onclick = () => show(n);
+  b.textContent = D.benchmarks[n].name; b.onclick = () => show(n, view);
   b.id = 'tab-'+n; tabs.appendChild(b);
 });
+
+// Sequential single-hue ramp (colorblind-safe): low recedes to the dark
+// surface, high reads bright. Never red-vs-green.
+const RAMP = ['#0d2440','#104281','#184f95','#1c5cab','#256abf','#2a78d6',
+              '#3987e5','#5598e7','#6da7ec','#86b6ef','#9ec5f4','#cde2fb'];
 function heat(v, lo, hi) {
   const t = hi > lo ? (v-lo)/(hi-lo) : .5;
-  return `hsl(${Math.round(t*120)},65%,${55-t*10}%)`;
+  return RAMP[Math.max(0, Math.min(RAMP.length-1, Math.round(t*(RAMP.length-1))))];
 }
+function inkFor(v, lo, hi) {
+  const t = hi > lo ? (v-lo)/(hi-lo) : .5;
+  return t > .5 ? 'var(--ink-on-light)' : 'var(--fg)';
+}
+const pct = v => (v*100).toFixed(1).replace(/\.0$/,'') + '%';
+
+let view = 'matrix', sortMode = 'score', curName = '', showAllH = false;
+
+function tiles(b) {
+  const s = b.summary, t = [];
+  if (s.bestCombo) t.push(`<div class="tile"><div class="k">Best pairing</div>
+    <div class="v">${s.bestCombo[2].toFixed(3)}</div>
+    <div class="d">${s.bestCombo[0]} × ${s.bestCombo[1]}</div></div>`);
+  if (s.bestHarness) t.push(`<div class="tile"><div class="k">Best harness</div>
+    <div class="v">${s.bestHarness[0]}</div>
+    <div class="d">keeps ${pct(s.bestHarness[1])} of model-best · ${s.bestHarness[2]} models</div></div>`);
+  t.push(`<div class="tile"><div class="k">Harness effect</div>
+    <div class="v">${s.medianSpread!==null ? '±'+(s.medianSpread*100/2).toFixed(1)+' pts' : '—'}</div>
+    <div class="d">${s.medianSpread!==null ? 'median spread '+(s.medianSpread*100).toFixed(1)+' pts over '+s.spreadModels+' models (n≥3)' : 'no model measured under ≥3 harnesses yet'}</div></div>`);
+  t.push(`<div class="tile"><div class="k">Coverage</div>
+    <div class="v">${b.models.length} × ${b.harnesses.length}</div>
+    <div class="d">models × harnesses</div></div>`);
+  document.getElementById('tiles').innerHTML = t.join('');
+}
+
 function filterRows() {
   const q = document.getElementById('search').value.trim().toLowerCase();
   document.querySelectorAll('#matrix tbody tr').forEach(tr => {
@@ -109,44 +169,109 @@ function filterRows() {
     tr.style.display = (q && !m.includes(q)) ? 'none' : '';
   });
 }
-let sortMode = 'released', curName = '';
-function show(name) {
-  curName = name;
-  names.forEach(n => document.getElementById('tab-'+n).classList.toggle('on', n===name));
-  history.replaceState(null, '', '#'+name);
-  const b = D.benchmarks[name];
+
+function sortIdx(b) {
   const idx = b.models.map((_, i) => i);
   if (sortMode === 'released') {
     idx.sort((a, c) => {
       const ra = b.released[b.models[a]] || '', rc = b.released[b.models[c]] || '';
       if (ra === rc) return 0;
-      if (!ra) return 1;   // missing dates last
+      if (!ra) return 1;
       if (!rc) return -1;
-      return ra < rc ? 1 : -1;  // newest first
+      return ra < rc ? 1 : -1;
     });
   }
+  return idx;
+}
+
+function renderMatrix(b) {
+  const cols = b.harnesses.map((h,j) => ({h, j, cov:b.hcov[j]}))
+                          .filter(c => showAllH || c.cov >= 2);
+  const hidden = b.harnesses.length - cols.length;
+  document.getElementById('allh-label').style.display = hidden || showAllH ? '' : 'none';
+  document.querySelector('#allh-label').childNodes[1].textContent =
+    ` show ${hidden || 'all'} single-model harness${hidden===1?'':'es'}`;
   const flat = b.rows.flat().filter(v => v!==null);
   const lo = Math.min(...flat), hi = Math.max(...flat);
   let h = '<thead><tr><th>model</th><th>released</th>' +
-    b.harnesses.map(x=>`<th>${x}</th>`).join('') + '<th>spread</th><th>n</th></tr></thead><tbody>';
-  idx.forEach(i => {
+    cols.map(c=>`<th title="tested with ${c.cov} model${c.cov===1?'':'s'}">${c.h}</th>`).join('') +
+    '<th>spread</th><th>n</th></tr></thead><tbody>';
+  sortIdx(b).forEach(i => {
     const m = b.models[i], row = b.rows[i], vals = row.filter(v=>v!==null);
-    const n = b.n[i];
-    const spread = (Math.max(...vals)-Math.min(...vals)).toFixed(3);
-    const rel = n >= 3 ? '' : ' na';
+    const n = b.n[i], best = Math.max(...vals);
+    const spread = (best-Math.min(...vals)).toFixed(3);
     const rd = b.released[m] || '';
-    h += `<tr><td title="${m}">${m}</td><td class="released">${rd}</td>` + row.map(v =>
-      v===null ? '<td class="na">·</td>'
-               : `<td class="v" style="background:${heat(v,lo,hi)}">${v.toFixed(3)}</td>`
-    ).join('') + `<td class="spread${rel}">${spread}</td><td>${n}</td></tr>`;
+    h += `<tr><td title="${m}">${m}</td><td class="released">${rd}</td>` + cols.map(c => {
+      const v = row[c.j];
+      if (v===null) return '<td class="na">·</td>';
+      const isBest = v===best ? ' best' : '';
+      return `<td class="v${isBest}" style="background:${heat(v,lo,hi)};color:${inkFor(v,lo,hi)}">${v.toFixed(3)}</td>`;
+    }).join('') + `<td class="spread${n>=3?'':' na2'}">${spread}</td><td>${n}</td></tr>`;
   });
   document.getElementById('matrix').innerHTML = h + '</tbody>';
+  document.getElementById('viewnote').textContent =
+    'Brighter blue = higher score within this benchmark. White ring = best harness for that model. ' +
+    (hidden && !showAllH ? hidden + ' harnesses tested with only one model are hidden — toggle above to show them.' : '');
   filterRows();
 }
-document.getElementById('sort').addEventListener('change', e => { sortMode = e.target.value; show(curName); });
+
+function renderHarness(b) {
+  document.getElementById('allh-label').style.display = 'none';
+  let h = '<thead><tr><th>harness</th><th class="barcell" style="text-align:left">% of model-best (avg)</th><th>wins</th><th>models</th></tr></thead><tbody>';
+  b.harnessRank.forEach(([name, nm, rel, wins]) => {
+    const dim = nm < 3;
+    h += `<tr${dim?' style="color:var(--dim)"':''}><td>${name}</td>
+      <td class="barcell"><span class="bar${dim?' dim':''}" style="width:${Math.round(rel*160)}px"></span>${pct(rel)}</td>
+      <td>${wins}</td><td>${nm}</td></tr>`;
+  });
+  document.getElementById('matrix').innerHTML = h + '</tbody>';
+  document.getElementById('viewnote').textContent =
+    'For each model a harness was tested with, its score as a share of that model\u2019s best-known score — then averaged. 100% = best choice for every model it ran. Harnesses with <2 models are excluded; <3 dimmed.';
+}
+
+function renderModel(b) {
+  document.getElementById('allh-label').style.display = 'none';
+  const rows = b.modelRank.slice();
+  if (sortMode === 'released')
+    rows.sort((a,c) => ((b.released[c[0]]||'') > (b.released[a[0]]||'') ? 1 : -1));
+  const hi = Math.max(...rows.map(r => r[1]));
+  let h = '<thead><tr><th>model</th><th>released</th><th class="barcell" style="text-align:left">best score</th><th>via harness</th><th>spread</th><th>n</th></tr></thead><tbody>';
+  rows.forEach(([m, best, via, spread, n]) => {
+    h += `<tr><td title="${m}">${m}</td><td class="released">${b.released[m]||''}</td>
+      <td class="barcell"><span class="bar" style="width:${Math.round(best/hi*160)}px"></span>${best.toFixed(3)}</td>
+      <td>${via}</td><td class="spread${n>=3?'':' na2'}">${spread.toFixed(3)}</td><td>${n}</td></tr>`;
+  });
+  document.getElementById('matrix').innerHTML = h + '</tbody>';
+  document.getElementById('viewnote').textContent =
+    'Each model\u2019s best score across all harnesses it was tested with, and the harness that achieved it.';
+  filterRows();
+}
+
+function show(name, v) {
+  curName = name; view = v || view;
+  names.forEach(n => document.getElementById('tab-'+n).classList.toggle('on', n===name));
+  document.querySelectorAll('#views button').forEach(x =>
+    x.classList.toggle('on', x.dataset.v===view));
+  history.replaceState(null, '', '#'+name+':'+view);
+  const b = D.benchmarks[name];
+  document.getElementById('bench-head').innerHTML =
+    `<h2>${b.name}</h2>` + (b.link?` <a href="${b.link}">about ↗</a>`:'') +
+    (b.blurb?`<p>${b.blurb}</p>`:'');
+  tiles(b);
+  if (view==='harness') renderHarness(b);
+  else if (view==='model') renderModel(b);
+  else renderMatrix(b);
+}
+
+document.querySelectorAll('#views button').forEach(x =>
+  x.onclick = () => show(curName, x.dataset.v));
+document.getElementById('sort').addEventListener('change', e => { sortMode = e.target.value; show(curName, view); });
 document.getElementById('search').addEventListener('input', filterRows);
-const init = decodeURIComponent(location.hash.slice(1));
-show(names.includes(init) ? init : (names.includes('terminalbench') ? 'terminalbench' : names[0]));
+document.getElementById('allh').addEventListener('change', e => { showAllH = e.target.checked; show(curName, view); });
+const frag = decodeURIComponent(location.hash.slice(1)).split(':');
+const initB = names.includes(frag[0]) ? frag[0] : names[0];
+view = ['matrix','harness','model'].includes(frag[1]) ? frag[1] : 'matrix';
+show(initB, view);
 </script>
 </body>
 </html>

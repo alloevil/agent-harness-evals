@@ -1,13 +1,12 @@
-model,HAL Generalist Agent,SWE-Agent,SWE-Agent  Pareto optimal,HAL Generalist Agent  Pareto optimal,spread,n
-claude-sonnet-4.5,0.4,0.68,0.72,,0.31999999999999995,3
-claude-opus-4.1,0.46,0.61,,,0.14999999999999997,2
-claude-3.7-sonnet,0.26,0.54,,,0.28,2
-o4-mini,0.06,0.54,,,0.48000000000000004,2
-claude-opus-4,0.34,0.5,,,0.15999999999999998,2
-gpt-5,0.12,0.46,,,0.34,2
-o3,0.0,0.46,,,0.46,2
-claude-haiku-4.5,0.24,,,0.44,0.2,2
-gpt-4.1,0.02,0.44,,,0.42,2
-deepseek-v3,0.1,0.24,,,0.13999999999999999,2
-gemini-2.0-flash,0.02,,0.24,,0.22,2
-deepseek-r1,0.06,0.0,,,0.06,2
+model,HAL Generalist Agent,SWE-Agent,spread,n
+claude-sonnet-4.5,0.4,0.72,0.31999999999999995,2
+claude-opus-4.1,0.46,0.61,0.14999999999999997,2
+claude-3.7-sonnet,0.26,0.54,0.28,2
+o4-mini,0.06,0.54,0.48000000000000004,2
+claude-opus-4,0.34,0.5,0.15999999999999998,2
+gpt-5,0.12,0.46,0.34,2
+o3,0.0,0.46,0.46,2
+gpt-4.1,0.02,0.44,0.42,2
+deepseek-v3,0.1,0.24,0.13999999999999999,2
+gemini-2.0-flash,0.02,0.24,0.22,2
+deepseek-r1,0.06,0.0,0.06,2

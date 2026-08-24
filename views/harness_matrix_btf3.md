@@ -7,4 +7,4 @@ Best score per (model, harness) pair. `spread` = max−min across harnesses for 
 | model           |   FutureSearch agent |   Vendor agent SDK |   spread |   n |
 |:----------------|---------------------:|-------------------:|---------:|----:|
 | gpt-5.5         |                0.143 |              0.134 |    0.009 |   2 |
-| claude-opus-4-8 |                0.14  |              0.137 |    0.003 |   2 |
+| claude-opus-4.8 |                0.14  |              0.137 |    0.003 |   2 |
