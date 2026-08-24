@@ -131,6 +131,65 @@ def normalize_epoch(src: Path = RAW_DIR / "epoch") -> pd.DataFrame:
         frames.append(out)
 
     records = pd.concat(frames, ignore_index=True)
+    return records
+
+
+# --- HAL (Holistic Agent Leaderboard): historical harness x model x cost -------
+
+_HAL_EFFORT = re.compile(r"\s+(High|Medium|Low)\s*$")
+_HAL_DATE = re.compile(r"\s*\(.*\)\s*$")
+_PCT = re.compile(r"([\d.]+)%")
+
+
+def canon_hal_model(raw: str) -> str:
+    """'Claude Sonnet 4.5 High (September 2025)' -> 'claude-sonnet-4.5'."""
+    s = _HAL_DATE.sub("", str(raw).strip())
+    s = _HAL_EFFORT.sub("", s)
+    return s.lower().replace(" ", "-")
+
+
+def parse_pct(x) -> "float | None":
+    m = _PCT.search(str(x))
+    return float(m.group(1)) / 100.0 if m else None
+
+
+def normalize_hal(src: Path = RAW_DIR / "hal") -> pd.DataFrame:
+    """Parse HAL leaderboard HTML into unified records (source='hal')."""
+    frames: list[pd.DataFrame] = []
+    for f in sorted(src.glob("*.html")):
+        bench = "hal_" + f.stem
+        try:
+            tables = pd.read_html(f)
+        except Exception as e:
+            print(f"skip {f.name}: {e}")
+            continue
+        if not tables:
+            continue
+        t = tables[0]
+        if t.shape[1] < 6:  # not a leaderboard table
+            continue
+        out = pd.DataFrame({
+            "benchmark": bench,
+            "model": t.iloc[:, 2].map(canon_hal_model),
+            "model_raw": t.iloc[:, 2],
+            "scaffold": t.iloc[:, 1].map(lambda x: str(x).strip()),
+            "score": t.iloc[:, 4].map(parse_pct),
+            "score_unit": "rate",
+            "stderr": None,
+            "org": "",
+            "release_date": "",
+            "source": "hal",
+            "source_link": f"https://hal.cs.princeton.edu/{f.stem}",
+        })
+        out = out.dropna(subset=["score"])
+        frames.append(out)
+    return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
+
+
+def normalize_all() -> pd.DataFrame:
+    """Run every source builder and write the unified parquet."""
+    parts = [normalize_epoch(), normalize_hal()]
+    records = pd.concat([p for p in parts if not p.empty], ignore_index=True)
     CLEAN_DIR.mkdir(parents=True, exist_ok=True)
     dest = CLEAN_DIR / "records.parquet"
     records.to_parquet(dest, index=False)
@@ -140,4 +199,4 @@ def normalize_epoch(src: Path = RAW_DIR / "epoch") -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    normalize_epoch()
+    normalize_all()

@@ -127,13 +127,13 @@ footer a { color:var(--accent); }
 </div>
 <details class="about" open>
   <summary>About this data</summary>
-  <p><b>Source:</b> Epoch AI Benchmarking Hub (CC-BY), mirroring the Terminal-Bench agent×model leaderboard — updated <span id="about-upd"></span>.</p>
+  <p><b>Sources:</b> Epoch AI Benchmarking Hub (CC-BY, Terminal-Bench agent×model board) and the <a href="https://hal.cs.princeton.edu/">HAL</a> Holistic Agent Leaderboard (harness×model×cost, historical) — updated <span id="about-upd"></span>.</p>
   <p><b>Reading a cell:</b> best pass rate for a (model × harness) pair. <b>spread</b> = max−min across harnesses for that model — the score difference the harness controls. <b>n</b> = harnesses measured; spread with n&nbsp;&lt;&nbsp;3 is dimmed (a single pairwise difference, not a spread).</p>
   <p><b>Order:</b> latest model release first by default; switch to best-score to see the ranking.</p>
 </details>
 <div class="wrap"><table id="matrix"></table></div>
 <p class="note">Cell color: green = high within this benchmark, red = low. <b>spread</b> = max−min across harnesses for that model; <b>n</b> = harnesses measured. Spread with <b>n&nbsp;&lt;&nbsp;3</b> is a single pairwise difference — shown dimmed, read with care.</p>
-<footer>Data: <a href="https://epoch.ai/benchmarks">Epoch AI Benchmarking Hub</a> (CC-BY, mirrors Terminal-Bench &amp; OSWorld agent×model leaderboards) · updated <span id="upd"></span> · <a href="trend.html">trend</a> · <a href="https://github.com/alloevil/agent-harness-evals">source &amp; pipeline</a></footer>
+<footer>Data: <a href="https://epoch.ai/benchmarks">Epoch AI Benchmarking Hub</a> (CC-BY) + <a href="https://hal.cs.princeton.edu/">HAL</a> · updated <span id="upd"></span> · <a href="trend.html">trend</a> · <a href="https://github.com/alloevil/agent-harness-evals">source &amp; pipeline</a></footer>
 </main>
 <script id="data" type="application/json">__DATA__</script>
 <script>

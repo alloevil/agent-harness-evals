@@ -27,5 +27,26 @@ def fetch_epoch(dest: Path = RAW_DIR / "epoch") -> Path:
     return dest
 
 
+HAL_BENCHMARKS = [
+    "swebench_verified_mini", "corebench_hard", "gaia", "online_mind2web",
+    "scicode", "scienceagentbench", "taubench_airline", "usaco", "assistantbench",
+]
+HAL_URL = "https://hal.cs.princeton.edu/{}"
+
+
+def fetch_hal(dest: Path = RAW_DIR / "hal") -> Path:
+    """Download HAL leaderboard pages (harness x model x cost, historical)."""
+    dest.mkdir(parents=True, exist_ok=True)
+    for bench in HAL_BENCHMARKS:
+        resp = requests.get(HAL_URL.format(bench), timeout=60)
+        resp.raise_for_status()
+        (dest / f"{bench}.html").write_text(resp.text)
+        print(f"hal: {bench} ({len(resp.text)/1024:.0f} KB)")
+    return dest
+
+
 if __name__ == "__main__":
     fetch_epoch()
+    fetch_hal()
+
+

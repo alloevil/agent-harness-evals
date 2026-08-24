@@ -7,10 +7,21 @@ these tests must fail loudly rather than let the matrix silently go wrong.
 import pandas as pd
 import pytest
 
-from normalize import canon_model, canon_scaffold, rescale
+
+from normalize import canon_hal_model, canon_model, canon_scaffold, parse_pct, rescale
 
 
-# --- model id canonicalization ------------------------------------------------
+def test_canon_hal_model_strips_effort_and_date():
+    assert canon_hal_model("Claude Sonnet 4.5 High (September 2025)") == "claude-sonnet-4.5"
+    assert canon_hal_model("o4-mini Low (April 2025)") == "o4-mini"
+    assert canon_hal_model("GPT-5 Medium (August 2025)") == "gpt-5"
+    assert canon_hal_model("Claude Opus 4.1 (August 2025)") == "claude-opus-4.1"
+
+
+def test_parse_pct_handles_confidence_intervals():
+    assert parse_pct("72.00%") == pytest.approx(0.72)
+    assert parse_pct("61.00% (-7.00/+7.00)") == pytest.approx(0.61)
+    assert parse_pct("$463.90") is None
 
 @pytest.mark.parametrize("raw,expected", [
     ("gpt-5.3-codex", "gpt-5.3-codex"),
