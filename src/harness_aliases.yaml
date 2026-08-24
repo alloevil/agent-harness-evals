@@ -27,4 +27,4 @@ aliases:
 # a single "computer-use (N-step)" family so it does not masquerade as many
 # distinct harnesses inflating the count.
 regex:
-  "computer-use": '^(computer-use-preview|o3|claude-[\d.-]+sonnet[\w-]*|claude-3-7-sonnet[\w-]*|claude-4-sonnet[\w-]*|qwen2\.5-vl[\w-]*) \(\d+ steps\)$'
+  "computer-use": '^[\w.-]+ \(\d+ steps\)$'

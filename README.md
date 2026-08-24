@@ -23,8 +23,8 @@ Existing cross-layer corpora ([Messier](https://arxiv.org/abs/2607.25891), [HAL]
 ## Use it
 
 ```bash
-pip install requests pandas pyarrow tabulate
-python src/fetch.py && python src/normalize.py && python src/views_harness.py && python src/build_site.py
+pip install -r requirements.txt
+python src/fetch.py && python src/normalize.py && python src/views_harness.py && python src/snapshot.py && python src/build_site.py && python src/build_trend.py
 ```
 
 Outputs:
@@ -32,8 +32,10 @@ Outputs:
 | artifact | content |
 |---|---|
 | `data/clean/records.parquet` | 2,440 unified records across 27 benchmarks |
+| `data/snapshots/*.jsonl` | daily snapshots — history is diffable, powers the trend view |
 | `views/harness_matrix_*.{csv,md}` | per-benchmark model × harness matrices |
-| `docs/index.html` | the [live site](https://alloevil.github.io/agent-harness-evals/) — self-contained, data inlined |
+| `docs/index.html` | the [live matrix](https://alloevil.github.io/agent-harness-evals/) — self-contained |
+| `docs/trend.html` | [score over time](https://alloevil.github.io/agent-harness-evals/trend.html), one line per harness |
 
 ## Record schema
 

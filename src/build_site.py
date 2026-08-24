@@ -95,7 +95,7 @@ footer a { color:var(--accent); }
 <nav id="tabs"></nav>
 <div class="wrap"><table id="matrix"></table></div>
 <p class="note">Cell color: green = high within this benchmark, red = low. <b>spread</b> = max−min across harnesses for that model; <b>n</b> = harnesses measured. Spread with <b>n&nbsp;&lt;&nbsp;3</b> is a single pairwise difference — shown dimmed, read with care.</p>
-<footer>Data: <a href="https://epoch.ai/benchmarks">Epoch AI Benchmarking Hub</a> (CC-BY, mirrors Terminal-Bench &amp; OSWorld agent×model leaderboards) · updated <span id="upd"></span> · <a href="https://github.com/alloevil/agent-harness-evals">source &amp; pipeline</a></footer>
+<footer>Data: <a href="https://epoch.ai/benchmarks">Epoch AI Benchmarking Hub</a> (CC-BY, mirrors Terminal-Bench &amp; OSWorld agent×model leaderboards) · updated <span id="upd"></span> · <a href="trend.html">trend</a> · <a href="https://github.com/alloevil/agent-harness-evals">source &amp; pipeline</a></footer>
 </main>
 <script id="data" type="application/json">__DATA__</script>
 <script>

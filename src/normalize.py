@@ -59,6 +59,24 @@ def canon_scaffold(raw) -> str:
             return canon
     return s
 
+def rescale(scores: pd.Series, stderr: "pd.Series | None" = None) -> tuple[pd.Series, "pd.Series | None", str]:
+    """Classify a benchmark's score scale; normalize percent (0-100) to 0-1.
+
+    Heuristic on the benchmark's max score: (1.5, 100] -> percent -> rate;
+    >100 -> raw units (e.g. dollars); otherwise already a 0-1 rate. The
+    stderr column, when present, is rescaled in lockstep with the score.
+    """
+    mx = scores.max()
+    if pd.isna(mx):
+        return scores, stderr, "rate"
+    if 1.5 < mx <= 100.0:
+        return (scores / 100.0,
+                (stderr / 100.0 if stderr is not None else stderr),
+                "rate")
+    if mx > 100.0:
+        return scores, stderr, "raw"
+    return scores, stderr, "rate"
+
 
 def normalize_epoch(src: Path = RAW_DIR / "epoch") -> pd.DataFrame:
     """Flatten every Epoch per-benchmark CSV into unified records.
@@ -107,15 +125,9 @@ def normalize_epoch(src: Path = RAW_DIR / "epoch") -> pd.DataFrame:
         out = out[out["model_raw"].notna() & (out["model"] != "") & (out["model"] != "nan")]
         # Scale heuristic: 0-100 percent scales -> 0-1. Non-rate metrics
         # (e.g. vending_bench dollars) stay raw, flagged via score_unit.
-        mx = out["score"].max()
-        if 1.5 < mx <= 100.0:
-            out["score"] /= 100.0
-            out["stderr"] /= 100.0
-            out["score_unit"] = "rate"
-        elif mx > 100.0:
-            out["score_unit"] = "raw"
-        else:
-            out["score_unit"] = "rate"
+        out["score"], out["stderr"], out["score_unit"] = rescale(
+            out["score"], out["stderr"]
+        )
         frames.append(out)
 
     records = pd.concat(frames, ignore_index=True)
