@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 420" role="img" aria-label="agent-harness-evals: same model, different harness. Live matrix showing claude-opus-4-6 scoring 0.580 under Claude Code and 0.699 under Droid on terminal-bench.">
+  <title>agent-harness-evals: same model, different harness, different score</title>
+  <defs>
+    <style>
+      .t  { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+      .s  { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="1240" height="420" rx="16" fill="#0d1117"/>
+  <rect x="0.5" y="0.5" width="1239" height="419" rx="16" fill="none" stroke="#21262d"/>
+
+  <!-- left: title block -->
+  <text x="64" y="96" class="t" font-size="44" font-weight="700" fill="#e6edf3">agent-harness-evals</text>
+  <text x="64" y="148" class="s" font-size="26" fill="#58a6ff" font-weight="600">Same model. Different harness. Different score.</text>
+  <text x="64" y="192" class="s" font-size="20" fill="#8b949e">Live benchmark aggregation across models, agent</text>
+  <text x="64" y="220" class="s" font-size="20" fill="#8b949e">harnesses, and tools — one schema, refreshed from</text>
+  <text x="64" y="248" class="s" font-size="20" fill="#8b949e">Epoch AI / Terminal-Bench / OSWorld leaderboards.</text>
+
+  <!-- pipeline strip -->
+  <g class="t" font-size="18">
+    <rect x="64" y="290" width="112" height="40" rx="8" fill="#161b22" stroke="#21262d"/>
+    <text x="120" y="316" fill="#e6edf3" text-anchor="middle">fetch</text>
+    <text x="192" y="316" fill="#8b949e">→</text>
+    <rect x="216" y="290" width="152" height="40" rx="8" fill="#161b22" stroke="#21262d"/>
+    <text x="292" y="316" fill="#e6edf3" text-anchor="middle">normalize</text>
+    <text x="384" y="316" fill="#8b949e">→</text>
+    <rect x="408" y="290" width="152" height="40" rx="8" fill="#161b22" stroke="#58a6ff"/>
+    <text x="484" y="316" fill="#58a6ff" text-anchor="middle">matrix</text>
+  </g>
+  <text x="64" y="368" class="s" font-size="17" fill="#8b949e">2,440 records · 27 benchmarks · 36 models × 58 harnesses · data CC-BY Epoch AI</text>
+
+  <!-- right: real mini-matrix (terminal-bench, actual values) -->
+  <g transform="translate(600,84)">
+    <text x="0" y="0" class="t" font-size="19" fill="#8b949e">terminal-bench · pass rate</text>
+
+    <!-- column headers -->
+    <g class="t" font-size="18" fill="#8b949e">
+      <text x="248" y="36" text-anchor="middle">Claude</text>
+      <text x="248" y="58" text-anchor="middle">Code</text>
+      <text x="342" y="36" text-anchor="middle">Terminus</text>
+      <text x="342" y="58" text-anchor="middle">2</text>
+      <text x="436" y="36" text-anchor="middle">Mux</text>
+      <text x="436" y="58" text-anchor="middle"> </text>
+      <text x="500" y="36" text-anchor="start">Droid</text>
+    </g>
+
+    <!-- row 1: claude-opus-4-6 (real: .580 .629 .665 .699, spread .218) -->
+    <text x="0" y="102" class="t" font-size="19" fill="#e6edf3">claude-opus-4-6</text>
+    <rect x="204" y="78" width="88" height="38" rx="6" fill="#b8a13a"/>
+    <text x="248" y="103" class="t" font-size="19" font-weight="700" fill="#0d1117" text-anchor="middle">.580</text>
+    <rect x="298" y="78" width="88" height="38" rx="6" fill="#9fb43a"/>
+    <text x="342" y="103" class="t" font-size="19" font-weight="700" fill="#0d1117" text-anchor="middle">.629</text>
+    <rect x="392" y="78" width="88" height="38" rx="6" fill="#7fb43a"/>
+    <text x="436" y="103" class="t" font-size="19" font-weight="700" fill="#0d1117" text-anchor="middle">.665</text>
+    <rect x="486" y="78" width="88" height="38" rx="6" fill="#4cb43a"/>
+    <text x="530" y="103" class="t" font-size="19" font-weight="700" fill="#0d1117" text-anchor="middle">.699</text>
+
+    <!-- row 2: gpt-5.3-codex (real: .647 .746 .773; no Claude Code cell) -->
+    <text x="0" y="152" class="t" font-size="19" fill="#e6edf3">gpt-5.3-codex</text>
+    <rect x="204" y="128" width="88" height="38" rx="6" fill="#161b22" stroke="#21262d"/>
+    <text x="248" y="153" class="t" font-size="19" fill="#8b949e" text-anchor="middle">—</text>
+    <rect x="298" y="128" width="88" height="38" rx="6" fill="#96b43a"/>
+    <text x="342" y="153" class="t" font-size="19" font-weight="700" fill="#0d1117" text-anchor="middle">.647</text>
+    <rect x="392" y="128" width="88" height="38" rx="6" fill="#57b43a"/>
+    <text x="436" y="153" class="t" font-size="19" font-weight="700" fill="#0d1117" text-anchor="middle">.746</text>
+    <rect x="486" y="128" width="88" height="38" rx="6" fill="#3ab450"/>
+    <text x="530" y="153" class="t" font-size="19" font-weight="700" fill="#0d1117" text-anchor="middle">.773</text>
+
+    <!-- spread callout -->
+    <path d="M 248 186 L 248 206 L 530 206 L 530 186" fill="none" stroke="#58a6ff" stroke-width="2"/>
+    <text x="389" y="238" class="t" font-size="21" font-weight="700" fill="#58a6ff" text-anchor="middle">spread 0.218 — the harness's share</text>
+    <text x="389" y="266" class="s" font-size="17" fill="#8b949e" text-anchor="middle">one model, four harnesses</text>
+  </g>
+</svg>
