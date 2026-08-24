@@ -24,6 +24,10 @@ def harness_matrices(min_harnesses: int = 2) -> dict[str, pd.DataFrame]:
     scaffolded = records[(records["scaffold"] != "") & (records["score_unit"] == "rate")]
     out: dict[str, pd.DataFrame] = {}
     VIEWS.mkdir(exist_ok=True)
+    # Views are committed artifacts: a benchmark that stops producing a matrix
+    # (source dropped, harnesses merged) must not leave a stale file behind.
+    for old in VIEWS.glob("harness_matrix_*"):
+        old.unlink()
 
     for bench, grp in scaffolded.groupby("benchmark"):
         # best score per (model, scaffold); dedupe repeated submissions

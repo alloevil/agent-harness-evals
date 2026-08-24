@@ -1,0 +1,83 @@
+# Benchmark display metadata for the site. Raw ids are pipeline-internal;
+# people should read benchmark names, not table keys. Anything missing here
+# falls back to the raw id with an empty blurb — adding an entry is optional
+# polish, never a requirement for a benchmark to appear.
+#
+# name:  short human name for the tab
+# blurb: one line: what a score on this benchmark means
+# link:  the benchmark's own page (not the aggregator's)
+
+terminalbench:
+  name: Terminal-Bench
+  blurb: Agentic tasks in a real shell — coding, sysadmin, data wrangling. Score = share of tasks passed.
+  link: https://www.tbench.ai/
+
+btf3:
+  name: BTF3
+  blurb: Epoch agent×model board. Score = share of tasks passed.
+  link: https://epoch.ai/benchmarks
+
+posttrainbench:
+  name: PostTrainBench
+  blurb: Agents fine-tune a base LLM on a target task; score reflects the post-trained model's quality.
+  link: https://epoch.ai/benchmarks
+
+frontiercode:
+  name: FrontierCode
+  blurb: Hard, unpublished competitive-programming-style coding tasks (Epoch board).
+  link: https://epoch.ai/benchmarks
+
+frontierswe:
+  name: FrontierSWE
+  blurb: Realistic software-engineering tasks; each model runs in its vendor's own CLI harness. Score = head-to-head dominance.
+  link: https://www.frontierswe.com/
+
+os_world:
+  name: OSWorld
+  blurb: Computer-use tasks in real desktop environments; the "harness" axis here is a step budget, not a distinct agent.
+  link: https://os-world.github.io/
+
+hal_swebench_verified_mini:
+  name: SWE-bench Verified Mini
+  blurb: 50-task subset of SWE-bench Verified — fix real GitHub issues. Score = share of issues resolved. (HAL)
+  link: https://hal.cs.princeton.edu/swebench_verified_mini
+
+hal_corebench_hard:
+  name: CORE-Bench Hard
+  blurb: Reproduce computational results from real research papers. (HAL)
+  link: https://hal.cs.princeton.edu/corebench_hard
+
+hal_gaia:
+  name: GAIA
+  blurb: General-assistant questions needing web search, browsing, and tool use. (HAL)
+  link: https://hal.cs.princeton.edu/gaia
+
+hal_online_mind2web:
+  name: Online-Mind2Web
+  blurb: Live website navigation tasks on the real web. (HAL)
+  link: https://hal.cs.princeton.edu/online_mind2web
+
+hal_scicode:
+  name: SciCode
+  blurb: Implement code for problems drawn from research-level science. (HAL)
+  link: https://hal.cs.princeton.edu/scicode
+
+hal_scienceagentbench:
+  name: ScienceAgentBench
+  blurb: Data-driven scientific-discovery tasks end to end. (HAL)
+  link: https://hal.cs.princeton.edu/scienceagentbench
+
+hal_taubench_airline:
+  name: τ-bench Airline
+  blurb: Customer-service dialogues with tool calls under airline policies. (HAL)
+  link: https://hal.cs.princeton.edu/taubench_airline
+
+hal_usaco:
+  name: USACO
+  blurb: Olympiad competitive-programming problems. (HAL)
+  link: https://hal.cs.princeton.edu/usaco
+
+hal_assistantbench:
+  name: AssistantBench
+  blurb: Realistic, time-consuming web-assistant tasks. (HAL)
+  link: https://hal.cs.princeton.edu/assistantbench
