@@ -16,7 +16,7 @@ Not another benchmark. An **aggregation and reconciliation layer** over benchmar
 
 1. **Fetch** live leaderboard data (Epoch AI Benchmarking Hub, 75 benchmarks, refreshed ~daily, CC-BY) plus the HAL harness leaderboards.
 2. **Normalize** model / scaffold / score semantics into one record schema — `(benchmark, model, scaffold, score)` — with **one model id across sources**: `claude-sonnet-4-5-20250929` (Epoch) and "Claude Sonnet 4.5 High (September 2025)" (HAL) both land on `claude-sonnet-4.5`, so cross-source rows join instead of fragmenting.
-3. **Render** views no single leaderboard offers: the **model × harness matrix**, a **harness ranking** (share of each model's best score a harness retains), and a **model ranking** (each model's best score and the harness that got it there).
+3. **Render** views no single leaderboard offers: the **model × harness matrix**, a **harness ranking** (share of each model's best score a harness retains), a **model ranking** (each model's best score and the harness that got it there), and **native-pairing boards** (FrontierSWE, frontiercode) where each model runs in its vendor's own CLI.
 
 Existing cross-layer corpora ([Messier](https://arxiv.org/abs/2607.25891), [HAL](https://github.com/princeton-pli/hal-harness)) are one-off snapshots; live leaderboards are single-layer. This repo is the missing combination: **cross-layer and alive** — a scheduled `fetch → normalize → build` run keeps the page exactly as fresh as the upstream data, with zero evaluation cost.
 
@@ -31,7 +31,7 @@ Outputs:
 
 | artifact | content |
 |---|---|
-| `data/clean/records.parquet` | ~5,000 unified records across 73 benchmarks (grows with upstream) |
+| `data/clean/records.parquet` | ~5,500 unified records across 83 benchmarks (grows with upstream) |
 | `data/snapshots/*.jsonl` | daily snapshots — history is diffable, powers the trend view |
 | `views/harness_matrix_*.{csv,md}` | per-benchmark model × harness matrices |
 | `docs/index.html` | the [live site](https://alloevil.github.io/agent-harness-evals/) — matrix, harness ranking, model ranking; self-contained |

@@ -109,7 +109,20 @@ _SCORE_COLS = (
     "Unguided % Solved", "Binary accuracy", "Overall pass (%)",
     "Challenge score", "average_score", "Overall Elo", "Arena Score",
     "Dominance", "Win Rate (%)", "EM", "Global average", "Overall (no subtitles)",
+    "Overall", "Average",
 )
+# Columns too generically named (or benchmark-specific) for the global list:
+# picked per benchmark, checked before the list above. geobench's points are
+# not a rate — rescale classifies them raw, keeping them out of the matrices.
+_SCORE_OVERRIDES = {
+    "vpct": "Correct",            # 0-1 pass rate despite the vague name
+    "geobench": "ACW Avg Score",  # GeoGuessr-style points, source units
+    "fictionlivebench": "120k token score",  # headline long-context tier, 0-1
+    "gdp_pdf": "GDP.pdf score",   # 0-1
+    "balrog": "Average progress",  # % game progress, 0-100
+    "aider_polyglot": "Percent correct",   # 0-100
+    "ale_bench": "Performance",   # AtCoder-style rating, source units
+}
 
 
 def _harness_col(df: pd.DataFrame) -> "str | None":
@@ -142,7 +155,9 @@ def normalize_epoch(src: Path = RAW_DIR / "epoch") -> pd.DataFrame:
             print(f"skip {csv.name}: {e}")
             continue
         hcol = _harness_col(df)
-        score_col = next((c for c in _SCORE_COLS if c in df.columns), None)
+        override = _SCORE_OVERRIDES.get(bench)
+        score_col = (override if override in df.columns
+                     else next((c for c in _SCORE_COLS if c in df.columns), None))
         if score_col is None:
             # Loud, not silent: a dropped file is lost coverage. If upstream
             # adds a benchmark with a new score column name, this line is the
@@ -167,6 +182,11 @@ def normalize_epoch(src: Path = RAW_DIR / "epoch") -> pd.DataFrame:
         })
         out = out.dropna(subset=["score"])
         out = out[out["model_raw"].notna() & (out["model"] != "") & (out["model"] != "nan")]
+        # Some boards (os_world) put the model's own name in the agent column
+        # when the vendor's default agent ran it. A scaffold that canonicalizes
+        # to the row's model is not a harness — record it as provider-default.
+        self_named = out["scaffold"].map(canon_model) == out["model"]
+        out.loc[self_named, "scaffold"] = ""
         # Scale heuristic: 0-100 percent scales -> 0-1. Non-rate metrics
         # (e.g. vending_bench dollars) stay raw, flagged via score_unit.
         out["score"], out["stderr"], out["score_unit"] = rescale(

@@ -40,12 +40,38 @@ def build_payload() -> dict:
         cell = grp.groupby(["model", "scaffold"])["score"].max().reset_index()
         counts = cell.groupby("model")["scaffold"].nunique()
         cell = cell[cell["model"].isin(counts[counts >= MIN_HARNESSES].index)]
+        released = grp.groupby("model")["release_date"].first()
+        info = meta.get(bench, {})
         if cell.empty:
+            # Native-pairing board: several harnesses on the leaderboard, but
+            # each model tested only under one (typically its vendor's CLI).
+            # No cross-harness comparison exists, but the model×native-harness
+            # ranking is real signal — don't hide it.
+            best = (grp.groupby(["model", "scaffold"])["score"].max()
+                    .reset_index().sort_values("score", ascending=False))
+            best = best.loc[best.groupby("model")["score"].idxmax()]
+            best = best.sort_values("score", ascending=False)
+            if grp["scaffold"].nunique() < 2 or len(best) < 5:
+                continue
+            top = best.iloc[0]
+            benches[bench] = {
+                "name": info.get("name", bench),
+                "blurb": info.get("blurb", ""),
+                "link": info.get("link", ""),
+                "native": True,
+                "released": {m: (None if pd.isna(d) else str(d)[:10])
+                             for m, d in released.items()},
+                "models": list(best["model"]),
+                "harnesses": sorted(grp["scaffold"].unique()),
+                "modelRank": [[r["model"], round(float(r["score"]), 3), r["scaffold"]]
+                              for _, r in best.iterrows()],
+                "summary": {"bestCombo": [top["model"], top["scaffold"],
+                                          round(float(top["score"]), 3)]},
+            }
             continue
         matrix = cell.pivot(index="model", columns="scaffold", values="score")
         matrix = matrix.loc[matrix.max(axis=1).sort_values(ascending=False).index]
         matrix = matrix[matrix.notna().sum().sort_values(ascending=False).index]
-        released = grp.groupby("model")["release_date"].first()
 
         # --- summary + rankings: the "answer first" layer -------------------
         row_max = matrix.max(axis=1)
@@ -82,7 +108,6 @@ def build_payload() -> dict:
                 break
         best_harness = [top[0], top[2], top[1]] if top else None
         reliable = spread[n_row >= 3]
-        info = meta.get(bench, {})
         benches[bench] = {
             "name": info.get("name", bench),
             "blurb": info.get("blurb", ""),
@@ -105,11 +130,13 @@ def build_payload() -> dict:
             "harnessRank": harness_rank,
             "modelRank": model_rank,
         }
-    # Richest matrix first: tabs ordered by how much comparison they hold.
+    # Cross-harness matrices first (the project's point), native boards after;
+    # richest first within each group.
     benches = dict(sorted(benches.items(),
-                          key=lambda kv: -len(kv[1]["models"]) * len(kv[1]["harnesses"])))
-    multi_models = {m for b in benches.values() for m in b["models"]}
-    multi_harn = {h for b in benches.values() for h in b["harnesses"]}
+                          key=lambda kv: (kv[1].get("native", False),
+                                          -len(kv[1]["models"]) * len(kv[1]["harnesses"]))))
+    multi_models = {m for b in benches.values() if not b.get("native") for m in b["models"]}
+    multi_harn = {h for b in benches.values() if not b.get("native") for h in b["harnesses"]}
     return {
         "updated": date.today().isoformat(),
         "totals": {"records": len(records), "benchmarks": int(records["benchmark"].nunique()),
@@ -273,9 +300,12 @@ function tiles(b) {
   if (s.bestHarness) t.push(`<div class="tile"><div class="k">Best harness</div>
     <div class="v">${s.bestHarness[0]}</div>
     <div class="d">keeps ${pct(s.bestHarness[1])} of model-best · ${s.bestHarness[2]} models</div></div>`);
-  t.push(`<div class="tile"><div class="k">Harness effect</div>
-    <div class="v">${s.medianSpread!==null ? '±'+(s.medianSpread*100/2).toFixed(1)+' pts' : '—'}</div>
-    <div class="d">${s.medianSpread!==null ? 'median spread '+(s.medianSpread*100).toFixed(1)+' pts over '+s.spreadModels+' models (n≥3)' : 'no model measured under ≥3 harnesses yet'}</div></div>`);
+  if (b.native) t.push(`<div class="tile"><div class="k">Board type</div>
+    <div class="v">Native pairings</div>
+    <div class="d">each model in its vendor\\u2019s own harness — no cross-harness spread to measure</div></div>`);
+  else t.push(`<div class="tile"><div class="k">Harness effect</div>
+    <div class="v">${s.medianSpread!=null ? '±'+(s.medianSpread*100/2).toFixed(1)+' pts' : '—'}</div>
+    <div class="d">${s.medianSpread!=null ? 'median spread '+(s.medianSpread*100).toFixed(1)+' pts over '+s.spreadModels+' models (n≥3)' : 'no model measured under ≥3 harnesses yet'}</div></div>`);
   t.push(`<div class="tile"><div class="k">Coverage</div>
     <div class="v">${b.models.length} × ${b.harnesses.length}</div>
     <div class="d">models × harnesses</div></div>`);
@@ -367,18 +397,38 @@ function renderModel(b) {
   filterRows();
 }
 
+function renderNative(b) {
+  document.getElementById('allh-label').style.display = 'none';
+  const rows = b.modelRank.slice();
+  if (sortMode === 'released')
+    rows.sort((a,c) => ((b.released[c[0]]||'') > (b.released[a[0]]||'') ? 1 : -1));
+  const hi = Math.max(...rows.map(r => r[1]));
+  let h = '<thead><tr><th>model</th><th>released</th><th class="barcell" style="text-align:left">score</th><th>native harness</th></tr></thead><tbody>';
+  rows.forEach(([m, v, via]) => {
+    h += `<tr><td title="${m}">${m}</td><td class="released">${b.released[m]||''}</td>
+      <td class="barcell"><span class="bar" style="width:${Math.round(v/hi*160)}px"></span>${v.toFixed(3)}</td>
+      <td>${via}</td></tr>`;
+  });
+  document.getElementById('matrix').innerHTML = h + '</tbody>';
+  document.getElementById('viewnote').textContent =
+    'Each model was evaluated only under its vendor\\u2019s own harness, so scores compare model+harness stacks, not harnesses in isolation.';
+  filterRows();
+}
+
 function show(name, v) {
   curName = name; view = v || view;
   names.forEach(n => document.getElementById('tab-'+n).classList.toggle('on', n===name));
+  const b = D.benchmarks[name];
+  document.getElementById('views').style.display = b.native ? 'none' : '';
   document.querySelectorAll('#views button').forEach(x =>
     x.classList.toggle('on', x.dataset.v===view));
-  history.replaceState(null, '', '#'+name+':'+view);
-  const b = D.benchmarks[name];
+  history.replaceState(null, '', '#'+name+(b.native?'':':'+view));
   document.getElementById('bench-head').innerHTML =
     `<h2>${b.name}</h2>` + (b.link?` <a href="${b.link}">about ↗</a>`:'') +
     (b.blurb?`<p>${b.blurb}</p>`:'');
   tiles(b);
-  if (view==='harness') renderHarness(b);
+  if (b.native) renderNative(b);
+  else if (view==='harness') renderHarness(b);
   else if (view==='model') renderModel(b);
   else renderMatrix(b);
 }
@@ -392,6 +442,11 @@ const frag = decodeURIComponent(location.hash.slice(1)).split(':');
 const initB = names.includes(frag[0]) ? frag[0] : names[0];
 view = ['matrix','harness','model'].includes(frag[1]) ? frag[1] : 'matrix';
 show(initB, view);
+window.addEventListener('hashchange', () => {
+  const f = decodeURIComponent(location.hash.slice(1)).split(':');
+  if (names.includes(f[0]))
+    show(f[0], ['matrix','harness','model'].includes(f[1]) ? f[1] : view);
+});
 </script>
 </body>
 </html>

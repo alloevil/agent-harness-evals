@@ -76,6 +76,23 @@ def test_canon_scaffold_exact_alias():
     assert canon_scaffold("Forge Code") == "ForgeCode"
     assert canon_scaffold("grok-cli") == "Grok CLI"
     assert canon_scaffold("Codex") == "Codex CLI"
+    # frontiercode spells CLIs in lowercase; one harness id across boards
+    assert canon_scaffold("claude-code") == "Claude Code"
+    assert canon_scaffold("codex") == "Codex CLI"
+    assert canon_scaffold("mini-swe-agent") == "Mini-SWE-Agent"
+
+
+def test_self_named_scaffold_becomes_provider_default(tmp_path):
+    # os_world puts the model's own name in the Agent column when the
+    # vendor-default agent ran it; that is not a harness.
+    import normalize as n
+    (tmp_path / "os_world.csv").write_text(
+        "Model version,Agent,Accuracy mean\n"
+        "claude-opus-4-5-20251101,Claude Opus 4.5,0.60\n"
+        "claude-opus-4-5-20251101,SomeRealAgent,0.55\n"
+    )
+    records = n.normalize_epoch(tmp_path)
+    assert records["scaffold"].tolist() == ["", "SomeRealAgent"]
 
 
 def test_canon_scaffold_regex_collapses_step_budget_family():

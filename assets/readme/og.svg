@@ -6,30 +6,30 @@
   </g>
   <g font-family="-apple-system, 'Segoe UI', Roboto, sans-serif">
     <text x="70" y="180" font-size="34" font-weight="600" fill="#58a6ff">Same model. Different harness. Different score.</text>
-    <text x="70" y="226" font-size="24" fill="#8b949e">The model x harness matrix model leaderboards hide.</text>
+    <text x="70" y="226" font-size="24" fill="#8b949e">The model × harness matrix, harness rankings, and model rankings leaderboards hide.</text>
   </g>
 
-  <!-- mini matrix: claude-opus-4-6 on terminal-bench -->
+  <!-- mini matrix: claude-opus-4.6 on terminal-bench -->
   <g transform="translate(70,300)" font-family="ui-monospace, Menlo, Consolas, monospace">
-    <text x="0" y="0" font-size="20" fill="#8b949e">terminal-bench · claude-opus-4-6</text>
+    <text x="0" y="0" font-size="20" fill="#8b949e">terminal-bench · claude-opus-4.6</text>
     <g font-size="18" fill="#8b949e">
       <text x="140" y="42" text-anchor="middle">Claude Code</text>
       <text x="280" y="42" text-anchor="middle">Terminus 2</text>
       <text x="420" y="42" text-anchor="middle">Mux</text>
       <text x="540" y="42" text-anchor="middle">Droid</text>
     </g>
-    <rect x="96" y="56" width="88" height="44" rx="8" fill="#b8a13a"/>
-    <text x="140" y="85" font-size="22" font-weight="700" fill="#0d1117" text-anchor="middle">.580</text>
-    <rect x="236" y="56" width="88" height="44" rx="8" fill="#9fb43a"/>
-    <text x="280" y="85" font-size="22" font-weight="700" fill="#0d1117" text-anchor="middle">.629</text>
-    <rect x="376" y="56" width="88" height="44" rx="8" fill="#7fb43a"/>
-    <text x="420" y="85" font-size="22" font-weight="700" fill="#0d1117" text-anchor="middle">.665</text>
-    <rect x="516" y="56" width="88" height="44" rx="8" fill="#4cb43a"/>
-    <text x="560" y="85" font-size="22" font-weight="700" fill="#0d1117" text-anchor="middle">.699</text>
+    <rect x="96" y="56" width="88" height="44" rx="8" fill="#1c5cab"/>
+    <text x="140" y="85" font-size="22" font-weight="700" fill="#e6edf3" text-anchor="middle">.580</text>
+    <rect x="236" y="56" width="88" height="44" rx="8" fill="#256abf"/>
+    <text x="280" y="85" font-size="22" font-weight="700" fill="#e6edf3" text-anchor="middle">.629</text>
+    <rect x="376" y="56" width="88" height="44" rx="8" fill="#2a78d6"/>
+    <text x="420" y="85" font-size="22" font-weight="700" fill="#e6edf3" text-anchor="middle">.665</text>
+    <rect x="516" y="56" width="88" height="44" rx="8" fill="#5598e7" stroke="#ffffff" stroke-opacity="0.85" stroke-width="3"/>
+    <text x="560" y="85" font-size="22" font-weight="700" fill="#0b1220" text-anchor="middle">.699</text>
     <text x="330" y="160" font-size="26" font-weight="700" fill="#58a6ff" text-anchor="middle">spread 0.218 — the harness's share</text>
   </g>
 
   <g font-family="-apple-system, 'Segoe UI', Roboto, sans-serif">
-    <text x="70" y="580" font-size="20" fill="#8b949e">alloevil.github.io/agent-harness-evals · live data, CC-BY Epoch AI</text>
+    <text x="70" y="580" font-size="20" fill="#8b949e">alloevil.github.io/agent-harness-evals · live data, CC-BY Epoch AI + HAL</text>
   </g>
 </svg>
