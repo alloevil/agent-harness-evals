@@ -6,8 +6,8 @@ Best score per (model, harness) pair. `spread` = max−min across harnesses for 
 
 | model             |   HAL Generalist Agent |   Scicode Tool Calling Agent |   Scicode Zero Shot Agent |   spread |   n |
 |:------------------|-----------------------:|-----------------------------:|--------------------------:|---------:|----:|
-| o3                |                  0.031 |                        0.092 |                     0.046 |    0.062 |   3 |
 | o4-mini           |                  0.062 |                        0.046 |                     0.092 |    0.046 |   3 |
+| o3                |                  0.031 |                        0.092 |                     0.046 |    0.062 |   3 |
 | gpt-4.1           |                  0.015 |                        0.015 |                     0.062 |    0.046 |   3 |
 | claude-3.7-sonnet |                  0.031 |                        0.046 |                     0.031 |    0.015 |   3 |
 | deepseek-v3       |                  0     |                        0     |                     0.031 |    0.031 |   3 |
