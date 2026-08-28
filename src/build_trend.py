@@ -51,7 +51,14 @@ TEMPLATE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>trend — agent-harness-evals</title>
+<title>Trend — agent-harness-evals benchmark history</title>
+<meta name="description" content="Score trends over time for models and agent harnesses across benchmarks — historical view of the agent-harness-evals matrix.">
+<link rel="canonical" href="https://alloevil.github.io/agent-harness-evals/trend.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://alloevil.github.io/agent-harness-evals/trend.html">
+<meta property="og:title" content="Trend — agent-harness-evals benchmark history">
+<meta property="og:description" content="Score trends over time for models and agent harnesses across benchmarks.">
+<meta name="twitter:card" content="summary">
 <style>
 :root { --bg:#0d1117; --fg:#e6edf3; --dim:#8b949e; --line:#21262d; --accent:#58a6ff; }
 body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.5 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
