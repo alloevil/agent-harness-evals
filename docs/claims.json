@@ -1,0 +1,58 @@
+{
+  "project": "agent-harness-evals",
+  "url": "https://alloevil.github.io/agent-harness-evals/",
+  "repository": "https://github.com/alloevil/agent-harness-evals",
+  "updated": "2026-09-07",
+  "claims": [
+    {
+      "id": "records-reconciled",
+      "claim": "6382 leaderboard records across 89 benchmarks are normalized into one (benchmark, model, harness, score) schema.",
+      "value": "6382",
+      "metric": "rows in data/clean/records.parquet after model and harness name reconciliation",
+      "method": "third-party leaderboard scores fetched from the Epoch AI Benchmarking Hub and the HAL leaderboards and normalized into one record schema; no evaluation is run by this project; model ids are canonicalized so the same model from two sources joins instead of forking",
+      "repro": "pip install -r requirements.txt && python src/fetch.py && python src/normalize.py && python src/views_harness.py",
+      "evidence": "https://github.com/alloevil/agent-harness-evals/tree/master/data/snapshots",
+      "verified": "2026-09-07"
+    },
+    {
+      "id": "cross-harness-coverage",
+      "claim": "41 models and 50 harnesses appear in at least one cross-harness matrix, over 10 benchmarks.",
+      "value": "41 models x 50 harnesses",
+      "metric": "distinct models and harnesses on boards where a model was measured under 2 or more harnesses",
+      "method": "aggregation of published leaderboard scores (Epoch AI Benchmarking Hub, HAL): best published score per (model, harness) pair; no evaluation is run by this project; models measured under a single harness are excluded from the matrix",
+      "repro": "pip install -r requirements.txt && python src/fetch.py && python src/normalize.py && python src/views_harness.py",
+      "evidence": "https://github.com/alloevil/agent-harness-evals/tree/master/views",
+      "verified": "2026-09-07"
+    },
+    {
+      "id": "median-harness-spread-terminalbench",
+      "claim": "On Terminal-Bench, the median gap between a model's best and worst agent harness is 0.134 (score as a 0-1 rate), across 22 models measured under 3 or more harnesses.",
+      "value": "0.134",
+      "metric": "median over models with 3+ harnesses of (best harness score - worst harness score) for that model",
+      "method": "aggregation of published leaderboard scores (Epoch AI Benchmarking Hub, HAL): best published score per (model, harness) pair; no evaluation is run by this project; models with fewer than 3 harnesses are excluded because a 2-harness gap is a single pairwise difference",
+      "repro": "pip install -r requirements.txt && python src/fetch.py && python src/normalize.py && python src/views_harness.py",
+      "evidence": "https://github.com/alloevil/agent-harness-evals/blob/master/views/harness_matrix_terminalbench.md",
+      "verified": "2026-09-07"
+    },
+    {
+      "id": "median-harness-spread-hal_corebench_hard",
+      "claim": "On CORE-Bench Hard, the median gap between a model's best and worst agent harness is 0.289 (score as a 0-1 rate), across 3 models measured under 3 or more harnesses.",
+      "value": "0.289",
+      "metric": "median over models with 3+ harnesses of (best harness score - worst harness score) for that model",
+      "method": "aggregation of published leaderboard scores (Epoch AI Benchmarking Hub, HAL): best published score per (model, harness) pair; no evaluation is run by this project; models with fewer than 3 harnesses are excluded because a 2-harness gap is a single pairwise difference",
+      "repro": "pip install -r requirements.txt && python src/fetch.py && python src/normalize.py && python src/views_harness.py",
+      "evidence": "https://github.com/alloevil/agent-harness-evals/blob/master/views/harness_matrix_hal_corebench_hard.md",
+      "verified": "2026-09-07"
+    },
+    {
+      "id": "median-harness-spread-hal_scicode",
+      "claim": "On SciCode, the median gap between a model's best and worst agent harness is 0.031 (score as a 0-1 rate), across 7 models measured under 3 or more harnesses.",
+      "value": "0.031",
+      "metric": "median over models with 3+ harnesses of (best harness score - worst harness score) for that model",
+      "method": "aggregation of published leaderboard scores (Epoch AI Benchmarking Hub, HAL): best published score per (model, harness) pair; no evaluation is run by this project; models with fewer than 3 harnesses are excluded because a 2-harness gap is a single pairwise difference",
+      "repro": "pip install -r requirements.txt && python src/fetch.py && python src/normalize.py && python src/views_harness.py",
+      "evidence": "https://github.com/alloevil/agent-harness-evals/blob/master/views/harness_matrix_hal_scicode.md",
+      "verified": "2026-09-07"
+    }
+  ]
+}

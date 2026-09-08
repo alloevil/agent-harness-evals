@@ -1,0 +1,38 @@
+# agent-harness-evals
+
+> agent-harness-evals is a reconciliation layer over public AI evaluation leaderboards that exposes the model x agent-harness matrix model-only leaderboards hide: which harness gets the most out of each model, and how much the harness alone moves the score.
+
+The same model does not score the same under every agent harness. This project fetches published leaderboard data (the Epoch AI Benchmarking Hub, refreshed about daily under CC-BY, plus the HAL harness leaderboards as a historical snapshot), reconciles model and harness names into one (benchmark, model, harness, score) record, and pivots the result per benchmark into a model x harness matrix with a per-model spread — best harness minus worst — so the harness contribution can be read with the model held fixed. As of 2026-09-07 it holds 6382 records over 89 benchmarks, with 41 models and 50 harnesses on 10 cross-harness boards. It runs no evaluations: every score is a third-party published number, republished with its source.
+
+Reproduce it: `pip install -r requirements.txt && python src/fetch.py && python src/normalize.py && python src/views_harness.py && python src/build_site.py`.
+
+## Docs
+- [Live matrix](https://alloevil.github.io/agent-harness-evals/): per benchmark, the model x harness matrix, a harness ranking and a model ranking
+- [Score trend](https://alloevil.github.io/agent-harness-evals/trend.html): score over time, one line per harness
+- [Method and record schema](https://github.com/alloevil/agent-harness-evals#record-schema): how model and harness ids are reconciled across sources
+- [Status and limitations](https://github.com/alloevil/agent-harness-evals#status--limitations): which harness data is live, which is a snapshot
+
+## Data
+- [Daily snapshots](https://github.com/alloevil/agent-harness-evals/tree/master/data/snapshots): one JSONL per day of normalized records, diffable history
+- [Harness matrices](https://github.com/alloevil/agent-harness-evals/tree/master/views): per-benchmark model x harness CSV and Markdown, with spread and n
+
+## Evidence
+- [claims.json](https://alloevil.github.io/agent-harness-evals/claims.json): every number on this site with metric, method, repro command and evidence
+- [llms-full.txt](https://alloevil.github.io/agent-harness-evals/llms-full.txt): self-contained description, install, limits and FAQ
+
+## Benchmarks
+- [Terminal-Bench](https://alloevil.github.io/agent-harness-evals/#terminalbench): 30 models x 37 harnesses. Agentic tasks in a real shell — coding, sysadmin, data wrangling. Score = share of tasks passed.
+- [CORE-Bench Hard](https://alloevil.github.io/agent-harness-evals/#hal_corebench_hard): 15 models x 3 harnesses. Reproduce computational results from real research papers. (HAL)
+- [GAIA](https://alloevil.github.io/agent-harness-evals/#hal_gaia): 11 models x 2 harnesses. General-assistant questions needing web search, browsing, and tool use. (HAL)
+- [SWE-bench Verified Mini](https://alloevil.github.io/agent-harness-evals/#hal_swebench_verified_mini): 11 models x 2 harnesses. 50-task subset of SWE-bench Verified — fix real GitHub issues. Score = share of issues resolved. (HAL)
+- [SciCode](https://alloevil.github.io/agent-harness-evals/#hal_scicode): 7 models x 3 harnesses. Implement code for problems drawn from research-level science. (HAL)
+- [τ-bench Airline](https://alloevil.github.io/agent-harness-evals/#hal_taubench_airline): 9 models x 2 harnesses. Customer-service dialogues with tool calls under airline policies. (HAL)
+- [Online-Mind2Web](https://alloevil.github.io/agent-harness-evals/#hal_online_mind2web): 7 models x 2 harnesses. Live website navigation tasks on the real web. (HAL)
+- [ScienceAgentBench](https://alloevil.github.io/agent-harness-evals/#hal_scienceagentbench): 5 models x 2 harnesses. Data-driven scientific-discovery tasks end to end. (HAL)
+- [BTF3](https://alloevil.github.io/agent-harness-evals/#btf3): 2 models x 2 harnesses. Epoch agent×model board. Score = share of tasks passed.
+- [USACO](https://alloevil.github.io/agent-harness-evals/#hal_usaco): 1 model x 2 harnesses. Olympiad competitive-programming problems. (HAL)
+- [FrontierCode](https://alloevil.github.io/agent-harness-evals/#frontiercode): native-pairing board, each model under its vendor's own harness. Hard, unpublished competitive-programming-style coding tasks (Epoch board).
+- [PostTrainBench](https://alloevil.github.io/agent-harness-evals/#posttrainbench): native-pairing board, each model under its vendor's own harness. Agents fine-tune a base LLM on a target task; score reflects the post-trained model's quality.
+
+## Source
+- [GitHub repository](https://github.com/alloevil/agent-harness-evals)
