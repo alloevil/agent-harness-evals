@@ -266,7 +266,7 @@ footer a { color:var(--accent); }
 </details>
 <div class="wrap"><table id="matrix"></table></div>
 <p class="note" id="viewnote"></p>
-<footer>Data: <a href="https://epoch.ai/benchmarks">Epoch AI Benchmarking Hub</a> (CC-BY) + <a href="https://hal.cs.princeton.edu/">HAL</a> · updated <span id="upd"></span> · <a href="trend.html">trend</a> · <a href="https://github.com/alloevil/agent-harness-evals">source &amp; pipeline</a></footer>
+<footer>Data: <a href="https://epoch.ai/benchmarks">Epoch AI Benchmarking Hub</a> (CC-BY) + <a href="https://hal.cs.princeton.edu/">HAL</a> · updated <span id="upd"></span> · <a href="trend.html">trend</a> · <a href="https://github.com/alloevil/agent-harness-evals">source &amp; pipeline</a> · <a href="https://alloevil.github.io/projects/">More projects by allo</a></footer>
 </main>
 <script id="data" type="application/json">__DATA__</script>
 <script>
