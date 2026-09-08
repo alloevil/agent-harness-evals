@@ -767,6 +767,13 @@ def llms_full_txt(payload: dict) -> str:
 
 
 def robots_txt() -> str:
+    """robots.txt for docs/ — advisory only, and worth knowing why before editing it.
+
+    The Robots Exclusion Protocol is origin-scoped: crawlers fetch https://alloevil.github.io/robots.txt
+    and never this subpath copy, so a Disallow written here has no teeth. It is kept because some AI
+    crawlers do probe subpaths and because it becomes authoritative if this site moves to its own domain.
+    Anything that genuinely must not be crawled has to be added to the origin's root robots.txt.
+    """
     return f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n"
 
 
@@ -774,7 +781,8 @@ def sitemap_xml() -> str:
     """Every HTML page actually present in docs/, home as the trailing-slash directory URL.
 
     Enumerated from disk rather than hand-listed: a sitemap written by hand next to a generated
-    site drifts the moment a page is added or dropped.
+    site drifts the moment a page is added or dropped. Pages only — assets (og.png, hero.svg, CSS)
+    resolve 200 but are not pages, and padding a sitemap with them dilutes it.
     """
     pages = sorted(p.name for p in DOCS.glob("*.html"))
     locs = [f"{SITE}/"] + [f"{SITE}/{name}" for name in pages if name != "index.html"]
