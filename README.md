@@ -95,6 +95,10 @@ Follows the reconciliation model of [Messier](https://arxiv.org/abs/2607.25891) 
 
 **Can I reuse the data?** The code and derived views are MIT licensed and the snapshots are committed here, so cloning is the simplest route. The underlying scores belong to their publishers — Epoch AI's dump is CC-BY and asks for credit, HAL's tables belong to the HAL maintainers — so keep those attributions when you republish.
 
+<p align="center">
+  <a href="https://github.com/oil-oil/beautify-github-readme"><img src="./assets/readme/made-with-beautify.svg" width="300" alt="README made with beautify-github-readme"></a>
+</p>
+
 ## License
 
 Code MIT. Data CC-BY, credit [Epoch AI](https://epoch.ai/benchmarks).
