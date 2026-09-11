@@ -62,7 +62,7 @@ def test_page_renders_every_placeholder():
 def test_claims_are_derived_from_the_payload():
     doc = bs.claims(PAYLOAD)
     assert doc["updated"] == PAYLOAD["updated"]
-    keys = {"id", "claim", "value", "metric", "method", "repro", "evidence", "verified"}
+    keys = {"id", "claim", "value", "metric", "method", "repro", "evidence", "as_of"}
     for item in doc["claims"]:
         assert set(item) == keys and all(item[k] for k in keys)
         assert "no evaluation is run by this project" in item["method"]

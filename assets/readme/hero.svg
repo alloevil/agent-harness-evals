@@ -31,7 +31,7 @@
     <text x="521" y="322" fill="#f0a63a" text-anchor="middle">site</text>
   </g>
 
-  <text x="64" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#8a95a1">~5,500 records &#183; 83 benchmarks &#183; CC-BY Epoch AI</text>
+  <text x="64" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17" fill="#8a95a1">6,395 records &#183; 89 benchmarks &#183; snapshot 2026-09-12</text>
 
   <g id="matrix" transform="translate(0 0)">
     <rect x="620" y="48" width="516" height="320" rx="14" fill="#151c24" stroke="#232c36"/>

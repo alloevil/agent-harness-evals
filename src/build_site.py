@@ -526,7 +526,7 @@ def claims(payload: dict) -> dict:
 
     def claim(cid: str, text: str, value: str, metric: str, method: str, repro: str, evidence: str) -> dict:
         return {"id": cid, "claim": text, "value": value, "metric": metric, "method": method,
-                "repro": repro, "evidence": evidence, "verified": day}
+                "repro": repro, "evidence": evidence, "as_of": day}
 
     items = [
         claim(
@@ -534,7 +534,7 @@ def claims(payload: dict) -> dict:
             f"{t['records']} leaderboard records across {t['benchmarks']} benchmarks are normalized into one "
             "(benchmark, model, harness, score) schema.",
             str(t["records"]),
-            "rows in data/clean/records.parquet after model and harness name reconciliation",
+            f"rows in the daily snapshot data/snapshots/{day}.jsonl, before per-view (model, harness) dedup",
             normalization + "; model ids are canonicalized so the same model from two sources joins instead of forking",
             PIPELINE,
             f"{REPO}/tree/master/data/snapshots",
@@ -605,7 +605,7 @@ def llms_txt(payload: dict) -> str:
         f"- [Harness matrices]({REPO}/tree/master/views): per-benchmark model x harness CSV and Markdown, with spread and n",
         "",
         "## Evidence",
-        f"- [claims.json]({SITE}/claims.json): every number on this site with metric, method, repro command and evidence",
+        f"- [claims.json]({SITE}/claims.json): the five headline aggregates, each with metric, method, repro command and evidence",
         f"- [llms-full.txt]({SITE}/llms-full.txt): self-contained description, install, limits and FAQ",
         "",
         "## Benchmarks",
