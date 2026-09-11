@@ -1,76 +1,79 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 420" role="img" aria-labelledby="t d">
-  <title id="t">agent-harness-evals: same model, different harness, different score</title>
-  <desc id="d">Live matrix showing claude-opus-4.6 scoring 0.580 under Claude Code and 0.699 under Droid on terminal-bench — a 0.218 spread controlled by the harness alone. Median spread 13.5 points across 22 models.</desc>
-  <defs>
-    <style>
-      .t  { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-      .s  { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-    </style>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" role="img" aria-labelledby="h-title h-desc">
+  <title id="h-title">agent-harness-evals: one model, four harnesses, four scores</title>
+  <desc id="h-desc">The model &#215; harness matrix for terminal-bench pass rate, harvested from the Epoch AI Benchmarking Hub. claude-opus-4.6 scores 0.580 under Claude Code, 0.629 under Terminus 2 and 0.699 under Droid; gpt-5.3-codex has no Claude Code score and runs 0.647 to 0.773. The 0.218 cross-harness spread for claude-opus-4.6 is measured over 11 harnesses; cells not measured upstream are marked "not run".</desc>
 
-  <rect width="1240" height="420" rx="16" fill="#0d1117"/>
-  <rect x="0.5" y="0.5" width="1239" height="419" rx="16" fill="none" stroke="#21262d"/>
+  <rect width="1200" height="400" rx="20" fill="#0e1319"/>
+  <rect x="0.5" y="0.5" width="1199" height="399" rx="20" fill="none" stroke="#232c36"/>
 
-  <!-- title block -->
-  <g id="title-block">
-    <text x="64" y="96" class="t" font-size="44" font-weight="700" fill="#e6edf3">agent-harness-evals</text>
-    <text x="64" y="148" class="s" font-size="26" fill="#58a6ff" font-weight="600">Same model. Different harness. Different score.</text>
-    <text x="64" y="192" class="s" font-size="20" fill="#8b949e">The model × harness matrix, harness rankings, and</text>
-    <text x="64" y="220" class="s" font-size="20" fill="#8b949e">model rankings that single leaderboards hide —</text>
-    <text x="64" y="248" class="s" font-size="20" fill="#8b949e">rebuilt daily from Epoch AI and HAL data.</text>
+  <g id="title-block" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <text x="64" y="64" font-size="18" fill="#f0a63a">unified eval data &#183; model &#215; harness &#215; benchmark</text>
+    <text x="64" y="124" font-size="42" font-weight="700" fill="#e9eef4">agent-harness-evals</text>
   </g>
 
-  <!-- pipeline strip -->
-  <g id="pipeline" class="t" font-size="18">
-    <rect x="64" y="290" width="100" height="40" rx="8" fill="#161b22" stroke="#21262d"/>
-    <text x="114" y="316" fill="#e6edf3" text-anchor="middle">fetch</text>
-    <text x="178" y="316" fill="#8b949e">→</text>
-    <rect x="202" y="290" width="140" height="40" rx="8" fill="#161b22" stroke="#21262d"/>
-    <text x="272" y="316" fill="#e6edf3" text-anchor="middle">normalize</text>
-    <text x="356" y="316" fill="#8b949e">→</text>
-    <rect x="380" y="290" width="236" height="40" rx="8" fill="#161b22" stroke="#58a6ff"/>
-    <text x="498" y="316" fill="#58a6ff" text-anchor="middle">matrix · rankings</text>
+  <g id="promise" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+    <text x="64" y="172" font-size="22" font-weight="600" fill="#f0a63a">Same model. Different harness. Different score.</text>
+    <text x="64" y="212" font-size="19" fill="#8a95a1">A reconciliation layer over public leaderboards:</text>
+    <text x="64" y="238" font-size="19" fill="#8a95a1">one schema for (benchmark, model, scaffold, score),</text>
+    <text x="64" y="264" font-size="19" fill="#8a95a1">pivoted into the matrix that single boards hide.</text>
   </g>
-  <text x="64" y="368" class="s" font-size="17" fill="#8b949e">5,499 records · 83 benchmarks · 42 models × 50 harnesses · data CC-BY Epoch AI + HAL</text>
 
-  <!-- project proof: real terminal-bench cells, site's blue heat ramp -->
-  <g id="project-proof" transform="translate(650,84)">
-    <text x="0" y="0" class="t" font-size="19" fill="#8b949e">terminal-bench · pass rate</text>
+  <g id="pipeline" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">
+    <rect x="64" y="296" width="92" height="40" rx="8" fill="#151c24" stroke="#232c36"/>
+    <text x="110" y="322" fill="#e9eef4" text-anchor="middle">fetch</text>
+    <text x="168" y="322" fill="#5d6874" text-anchor="middle">&#8594;</text>
+    <rect x="186" y="296" width="138" height="40" rx="8" fill="#151c24" stroke="#232c36"/>
+    <text x="255" y="322" fill="#e9eef4" text-anchor="middle">normalize</text>
+    <text x="336" y="322" fill="#5d6874" text-anchor="middle">&#8594;</text>
+    <rect x="354" y="296" width="94" height="40" rx="8" fill="#151c24" stroke="#232c36"/>
+    <text x="401" y="322" fill="#e9eef4" text-anchor="middle">views</text>
+    <text x="461" y="322" fill="#5d6874" text-anchor="middle">&#8594;</text>
+    <rect x="479" y="296" width="84" height="40" rx="8" fill="#151c24" stroke="#f0a63a"/>
+    <text x="521" y="322" fill="#f0a63a" text-anchor="middle">site</text>
+  </g>
 
-    <g class="t" font-size="18" fill="#8b949e">
-      <text x="248" y="36" text-anchor="middle">Claude</text>
-      <text x="248" y="58" text-anchor="middle">Code</text>
-      <text x="342" y="36" text-anchor="middle">Terminus</text>
-      <text x="342" y="58" text-anchor="middle">2</text>
-      <text x="436" y="36" text-anchor="middle">Mux</text>
-      <text x="530" y="36" text-anchor="middle">Droid</text>
+  <text x="64" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#8a95a1">~5,500 records &#183; 83 benchmarks &#183; CC-BY Epoch AI</text>
+
+  <g id="matrix" transform="translate(0 0)">
+    <rect x="620" y="48" width="516" height="320" rx="14" fill="#151c24" stroke="#232c36"/>
+
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="19">
+      <text x="644" y="86" fill="#e9eef4">terminal-bench &#183; pass rate</text>
+      <circle cx="968" cy="79" r="5" fill="#f0a63a"/>
+      <circle cx="968" cy="79" r="9" fill="none" stroke="#f0a63a" stroke-opacity="0.35"/>
+      <text x="982" y="86" font-size="18" fill="#f0a63a">LIVE &#183; daily</text>
+    </g>
+    <line x1="644" y1="100" x2="1112" y2="100" stroke="#232c36"/>
+
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#8a95a1">
+      <text x="644" y="146" fill="#5d6874">model &#8595;</text>
+      <text x="864" y="126" text-anchor="middle">Claude</text>
+      <text x="965" y="126" text-anchor="middle">Terminus</text>
+      <text x="1066" y="126" text-anchor="middle">Droid</text>
+      <text x="864" y="146" text-anchor="middle">Code</text>
+      <text x="965" y="146" text-anchor="middle">2</text>
     </g>
 
-    <!-- row 1: claude-opus-4.6 (real: .580 .629 .665 .699, spread .218) -->
-    <text x="0" y="102" class="t" font-size="19" fill="#e6edf3">claude-opus-4.6</text>
-    <rect x="204" y="78" width="88" height="38" rx="6" fill="#1c5cab"/>
-    <text x="248" y="103" class="t" font-size="19" font-weight="700" fill="#e6edf3" text-anchor="middle">.580</text>
-    <rect x="298" y="78" width="88" height="38" rx="6" fill="#256abf"/>
-    <text x="342" y="103" class="t" font-size="19" font-weight="700" fill="#e6edf3" text-anchor="middle">.629</text>
-    <rect x="392" y="78" width="88" height="38" rx="6" fill="#2a78d6"/>
-    <text x="436" y="103" class="t" font-size="19" font-weight="700" fill="#e6edf3" text-anchor="middle">.665</text>
-    <rect x="486" y="78" width="88" height="38" rx="6" fill="#5598e7" stroke="#ffffff" stroke-opacity="0.85" stroke-width="2.5"/>
-    <text x="530" y="103" class="t" font-size="19" font-weight="700" fill="#0b1220" text-anchor="middle">.699</text>
+    <text x="644" y="186" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#e9eef4">claude-opus-4.6</text>
+    <rect x="820" y="158" width="89" height="44" rx="7" fill="#5c3a10"/>
+    <text x="864" y="188" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#fdf6e9" text-anchor="middle">.580</text>
+    <rect x="921" y="158" width="89" height="44" rx="7" fill="#8a5613"/>
+    <text x="965" y="188" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#fdf6e9" text-anchor="middle">.629</text>
+    <rect x="1022" y="158" width="89" height="44" rx="7" fill="#cf8a2a"/>
+    <rect x="1022" y="158" width="89" height="44" rx="7" fill="none" stroke="#ffffff" stroke-opacity="0.9" stroke-width="2.5"/>
+    <text x="1066" y="188" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#1a1207" text-anchor="middle">.699</text>
 
-    <!-- row 2: gpt-5.3-codex (real: .647 .746 .773; not run under Claude Code) -->
-    <text x="0" y="152" class="t" font-size="19" fill="#e6edf3">gpt-5.3-codex</text>
-    <rect x="204" y="128" width="88" height="38" rx="6" fill="#161b22" stroke="#21262d"/>
-    <text x="248" y="153" class="t" font-size="19" fill="#8b949e" text-anchor="middle">—</text>
-    <rect x="298" y="128" width="88" height="38" rx="6" fill="#256abf"/>
-    <text x="342" y="153" class="t" font-size="19" font-weight="700" fill="#e6edf3" text-anchor="middle">.647</text>
-    <rect x="392" y="128" width="88" height="38" rx="6" fill="#6da7ec"/>
-    <text x="436" y="153" class="t" font-size="19" font-weight="700" fill="#0b1220" text-anchor="middle">.746</text>
-    <rect x="486" y="128" width="88" height="38" rx="6" fill="#86b6ef" stroke="#ffffff" stroke-opacity="0.85" stroke-width="2.5"/>
-    <text x="530" y="153" class="t" font-size="19" font-weight="700" fill="#0b1220" text-anchor="middle">.773</text>
+    <text x="644" y="248" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#e9eef4">gpt-5.3-codex</text>
+    <rect x="820" y="220" width="89" height="44" rx="7" fill="none" stroke="#3a4450" stroke-dasharray="7 6"/>
+    <text x="864" y="250" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#8a95a1" text-anchor="middle">not run</text>
+    <rect x="921" y="220" width="89" height="44" rx="7" fill="#96601a"/>
+    <text x="965" y="250" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#fdf6e9" text-anchor="middle">.647</text>
+    <rect x="1022" y="220" width="89" height="44" rx="7" fill="#f4b04a"/>
+    <rect x="1022" y="220" width="89" height="44" rx="7" fill="none" stroke="#ffffff" stroke-opacity="0.9" stroke-width="2.5"/>
+    <text x="1066" y="250" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#1a1207" text-anchor="middle">.773</text>
 
-    <!-- spread callout -->
-    <path d="M 248 186 L 248 206 L 530 206 L 530 186" fill="none" stroke="#58a6ff" stroke-width="2"/>
-    <text x="287" y="238" class="t" font-size="21" font-weight="700" fill="#58a6ff" text-anchor="middle">spread 0.218 — the harness's share</text>
-    <text x="287" y="266" class="s" font-size="17" fill="#8b949e" text-anchor="middle">median spread across 22 models: 13.5 pts</text>
+    <line x1="644" y1="282" x2="1112" y2="282" stroke="#232c36"/>
+    <rect x="644" y="296" width="4" height="56" fill="#f0a63a"/>
+    <text x="662" y="314" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="19" fill="#f0a63a">cross-harness spread 0.218 (n=11)</text>
+    <text x="662" y="338" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#8a95a1">claude-opus-4.6: 0.580 &#8594; 0.699 shown</text>
   </g>
 </svg>

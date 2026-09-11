@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 150" role="img" aria-labelledby="p-title p-desc">
+  <title id="p-title">Live-source pipeline: fetch, normalize, build, publish</title>
+  <desc id="p-desc">Two upstream sources feed one pipeline. The Epoch AI Benchmarking Hub is fetched live about daily; HAL is a snapshot. fetch downloads the published scores, normalize reconciles model and scaffold names into the shared schema, build writes the views, and the matrix and site are published. The scheduled run commits only when the data changed.</desc>
+
+  <rect width="1200" height="150" rx="16" fill="#0e1319"/>
+  <rect x="0.5" y="0.5" width="1199" height="149" rx="16" fill="none" stroke="#232c36"/>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <text x="64" y="46" font-size="18" fill="#f0a63a">LIVE SOURCES</text>
+    <text x="64" y="78" font-size="20" fill="#e9eef4">Daily refresh, committed only when the data changed</text>
+  </g>
+
+  <g id="source-to-site" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">
+    <rect x="64" y="96" width="210" height="38" rx="8" fill="#151c24" stroke="#f0a63a"/>
+    <circle cx="86" cy="115" r="5" fill="#f0a63a"/>
+    <text x="100" y="121" fill="#e9eef4">Epoch AI ~daily</text>
+
+    <text x="283" y="121" fill="#5d6874" text-anchor="middle">+</text>
+
+    <rect x="290" y="96" width="182" height="38" rx="8" fill="#151c24" stroke="#232c36"/>
+    <text x="306" y="121" fill="#8a95a1">HAL &#183; snapshot</text>
+
+    <text x="486" y="121" fill="#5d6874" text-anchor="middle">&#8594;</text>
+    <rect x="504" y="96" width="100" height="38" rx="8" fill="#151c24" stroke="#232c36"/>
+    <text x="520" y="121" fill="#e9eef4">fetch</text>
+
+    <text x="618" y="121" fill="#5d6874" text-anchor="middle">&#8594;</text>
+    <rect x="636" y="96" width="138" height="38" rx="8" fill="#151c24" stroke="#232c36"/>
+    <text x="652" y="121" fill="#e9eef4">normalize</text>
+
+    <text x="788" y="121" fill="#5d6874" text-anchor="middle">&#8594;</text>
+    <rect x="806" y="96" width="94" height="38" rx="8" fill="#151c24" stroke="#232c36"/>
+    <text x="822" y="121" fill="#e9eef4">build</text>
+
+    <text x="914" y="121" fill="#5d6874" text-anchor="middle">&#8594;</text>
+    <rect x="932" y="96" width="172" height="38" rx="8" fill="#151c24" stroke="#f0a63a"/>
+    <text x="948" y="121" fill="#f0a63a">matrix + site</text>
+  </g>
+</svg>
