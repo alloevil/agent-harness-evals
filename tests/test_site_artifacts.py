@@ -62,14 +62,27 @@ def test_page_renders_every_placeholder():
 def test_claims_are_derived_from_the_payload():
     doc = bs.claims(PAYLOAD)
     assert doc["updated"] == PAYLOAD["updated"]
-    keys = {"id", "claim", "value", "metric", "method", "repro", "evidence", "as_of"}
+    keys = {"id", "claim", "value", "metric", "method", "repro", "evidence", "as_of", "check"}
     for item in doc["claims"]:
         assert set(item) == keys and all(item[k] for k in keys)
         assert "no evaluation is run by this project" in item["method"]
+        # every claim ships the command that recomputes it, and that command reads a committed
+        # artifact instead of re-running the generator that wrote the number
+        chk = item["check"]
+        assert set(chk) == {"cmd", "expect", "timeout"}
+        assert chk["cmd"].startswith(f"python3 {bs.CHECKER} ")
+        assert "build_site" not in chk["cmd"]
     by_id = {item["id"]: item for item in doc["claims"]}
     assert by_id["records-reconciled"]["value"] == "1234"
+    assert by_id["records-reconciled"]["check"]["cmd"].endswith("data/snapshots/2026-01-02.jsonl")
+    assert by_id["records-reconciled"]["check"]["expect"] == {"equals": "1234 records across 7 benchmarks"}
+    assert by_id["cross-harness-coverage"]["check"]["expect"] == {
+        "equals": "5 models and 9 harnesses over 2 benchmarks"}
     assert by_id["median-harness-spread-wide"]["value"] == "0.111"
     assert "4 models" in by_id["median-harness-spread-wide"]["claim"]
+    # the check pins the spread and the sample it was taken over, off the published matrix CSV
+    assert by_id["median-harness-spread-wide"]["check"]["cmd"].endswith("views/harness_matrix_wide.csv")
+    assert by_id["median-harness-spread-wide"]["check"]["expect"] == {"equals": "0.111 over 4 models"}
     # a board where no model has 3+ harnesses has no spread to claim, and a native board has no matrix
     assert "median-harness-spread-thin" not in by_id
     assert "median-harness-spread-native" not in by_id

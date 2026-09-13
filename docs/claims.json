@@ -12,7 +12,14 @@
       "method": "third-party leaderboard scores fetched from the Epoch AI Benchmarking Hub and the HAL leaderboards and normalized into one record schema; no evaluation is run by this project; model ids are canonicalized so the same model from two sources joins instead of forking",
       "repro": "pip install -r requirements.txt && python src/fetch.py && python src/normalize.py && python src/views_harness.py",
       "evidence": "https://github.com/alloevil/agent-harness-evals/tree/master/data/snapshots",
-      "as_of": "2026-09-12"
+      "as_of": "2026-09-12",
+      "check": {
+        "cmd": "python3 src/claims_check.py records data/snapshots/2026-09-12.jsonl",
+        "expect": {
+          "equals": "6395 records across 89 benchmarks"
+        },
+        "timeout": 60
+      }
     },
     {
       "id": "cross-harness-coverage",
@@ -22,7 +29,14 @@
       "method": "aggregation of published leaderboard scores (Epoch AI Benchmarking Hub, HAL): best published score per (model, harness) pair; no evaluation is run by this project; models measured under a single harness are excluded from the matrix",
       "repro": "pip install -r requirements.txt && python src/fetch.py && python src/normalize.py && python src/views_harness.py",
       "evidence": "https://github.com/alloevil/agent-harness-evals/tree/master/views",
-      "as_of": "2026-09-12"
+      "as_of": "2026-09-12",
+      "check": {
+        "cmd": "python3 src/claims_check.py coverage data/snapshots/2026-09-12.jsonl",
+        "expect": {
+          "equals": "41 models and 50 harnesses over 10 benchmarks"
+        },
+        "timeout": 60
+      }
     },
     {
       "id": "median-harness-spread-terminalbench",
@@ -32,7 +46,14 @@
       "method": "aggregation of published leaderboard scores (Epoch AI Benchmarking Hub, HAL): best published score per (model, harness) pair; no evaluation is run by this project; models with fewer than 3 harnesses are excluded because a 2-harness gap is a single pairwise difference",
       "repro": "pip install -r requirements.txt && python src/fetch.py && python src/normalize.py && python src/views_harness.py",
       "evidence": "https://github.com/alloevil/agent-harness-evals/blob/master/views/harness_matrix_terminalbench.md",
-      "as_of": "2026-09-12"
+      "as_of": "2026-09-12",
+      "check": {
+        "cmd": "python3 src/claims_check.py spread views/harness_matrix_terminalbench.csv",
+        "expect": {
+          "equals": "0.134 over 22 models"
+        },
+        "timeout": 60
+      }
     },
     {
       "id": "median-harness-spread-hal_corebench_hard",
@@ -42,7 +63,14 @@
       "method": "aggregation of published leaderboard scores (Epoch AI Benchmarking Hub, HAL): best published score per (model, harness) pair; no evaluation is run by this project; models with fewer than 3 harnesses are excluded because a 2-harness gap is a single pairwise difference",
       "repro": "pip install -r requirements.txt && python src/fetch.py && python src/normalize.py && python src/views_harness.py",
       "evidence": "https://github.com/alloevil/agent-harness-evals/blob/master/views/harness_matrix_hal_corebench_hard.md",
-      "as_of": "2026-09-12"
+      "as_of": "2026-09-12",
+      "check": {
+        "cmd": "python3 src/claims_check.py spread views/harness_matrix_hal_corebench_hard.csv",
+        "expect": {
+          "equals": "0.289 over 3 models"
+        },
+        "timeout": 60
+      }
     },
     {
       "id": "median-harness-spread-hal_scicode",
@@ -52,7 +80,14 @@
       "method": "aggregation of published leaderboard scores (Epoch AI Benchmarking Hub, HAL): best published score per (model, harness) pair; no evaluation is run by this project; models with fewer than 3 harnesses are excluded because a 2-harness gap is a single pairwise difference",
       "repro": "pip install -r requirements.txt && python src/fetch.py && python src/normalize.py && python src/views_harness.py",
       "evidence": "https://github.com/alloevil/agent-harness-evals/blob/master/views/harness_matrix_hal_scicode.md",
-      "as_of": "2026-09-12"
+      "as_of": "2026-09-12",
+      "check": {
+        "cmd": "python3 src/claims_check.py spread views/harness_matrix_hal_scicode.csv",
+        "expect": {
+          "equals": "0.031 over 7 models"
+        },
+        "timeout": 60
+      }
     }
   ]
 }

@@ -32,6 +32,11 @@ REPO = "https://github.com/alloevil/agent-harness-evals"
 
 MIN_HARNESSES = 2
 
+# Every claim leaves with the command that recomputes it. The checker reads the committed
+# snapshot and matrix CSVs, never this generator: a gate that re-runs the code that produced
+# a number cannot see that number drift.
+CHECKER = "src/claims_check.py"
+
 
 def _bench_meta() -> dict:
     return yaml.safe_load(META.read_text()) or {}
@@ -514,6 +519,10 @@ PIPELINE = ("pip install -r requirements.txt && python src/fetch.py && python sr
 def claims(payload: dict) -> dict:
     """Every value is read off the payload the page was built from, so claims.json cannot drift from the site.
 
+    Each claim also carries a `check`: the command that recomputes the published figure from the
+    committed snapshot and matrix CSVs, for `.github/workflows/claims.yml` to run. The checks do
+    not call this module — see src/claims_check.py for why.
+
     These are aggregations of third-party leaderboard scores, not measurements taken here; each `method` says so.
     """
     t = payload["totals"]
@@ -524,9 +533,11 @@ def claims(payload: dict) -> dict:
     normalization = ("third-party leaderboard scores fetched from the Epoch AI Benchmarking Hub and the HAL "
                      "leaderboards and normalized into one record schema; no evaluation is run by this project")
 
-    def claim(cid: str, text: str, value: str, metric: str, method: str, repro: str, evidence: str) -> dict:
+    def claim(cid: str, text: str, value: str, metric: str, method: str, repro: str, evidence: str,
+              cmd: str, expect: dict) -> dict:
         return {"id": cid, "claim": text, "value": value, "metric": metric, "method": method,
-                "repro": repro, "evidence": evidence, "as_of": day}
+                "repro": repro, "evidence": evidence, "as_of": day,
+                "check": {"cmd": cmd, "expect": expect, "timeout": 60}}
 
     items = [
         claim(
@@ -538,6 +549,8 @@ def claims(payload: dict) -> dict:
             normalization + "; model ids are canonicalized so the same model from two sources joins instead of forking",
             PIPELINE,
             f"{REPO}/tree/master/data/snapshots",
+            f"python3 {CHECKER} records data/snapshots/{day}.jsonl",
+            {"equals": f"{t['records']} records across {t['benchmarks']} benchmarks"},
         ),
         claim(
             "cross-harness-coverage",
@@ -548,6 +561,8 @@ def claims(payload: dict) -> dict:
             aggregation + "; models measured under a single harness are excluded from the matrix",
             PIPELINE,
             f"{REPO}/tree/master/views",
+            f"python3 {CHECKER} coverage data/snapshots/{day}.jsonl",
+            {"equals": f"{t['models']} models and {t['harnesses']} harnesses over {len(matrices)} benchmarks"},
         ),
     ]
     for bench, b in matrices.items():
@@ -565,6 +580,8 @@ def claims(payload: dict) -> dict:
                 "pairwise difference",
                 PIPELINE,
                 f"{REPO}/blob/master/views/harness_matrix_{bench}.md",
+                f"python3 {CHECKER} spread views/harness_matrix_{bench}.csv",
+                {"equals": f"{spread:.3f} over {b['summary']['spreadModels']} models"},
             )
         )
     return {"project": "agent-harness-evals", "url": f"{SITE}/", "repository": REPO, "updated": day, "claims": items}
