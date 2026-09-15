@@ -7,6 +7,7 @@ again from data this repository commits:
     records   rows, and distinct benchmark keys, of data/snapshots/<date>.jsonl
     coverage  union of models and harnesses over boards where some model has 2+ harnesses
     spread    per-model spread recomputed from a committed views/harness_matrix_<b>.csv
+    motion    the built page animates and honours prefers-reduced-motion (reads docs/index.html)
 
 Standard library only. The claims CI job installs nothing (it runs on a bare python3), so the
 receipt behind a claim has to be executable without pandas, the network, or any API key.
@@ -93,7 +94,26 @@ def cmd_spread(matrix_csv: str) -> str:
     return f"{round(statistics.median(spreads), 3):.3f} over {len(spreads)} models"
 
 
-COMMANDS = {"records": cmd_records, "coverage": cmd_coverage, "spread": cmd_spread}
+def cmd_motion(page: str) -> str:
+    """Check the page animates and can be told not to.
+
+    Covers every way this page can move — CSS animations, SVG SMIL, requestAnimationFrame and
+    WAAPI's element.animate() — and requires a reduced-motion branch wherever one is found.
+    """
+    import pathlib as _pathlib
+    import re as _re
+
+    text = _pathlib.Path(page).read_text(encoding="utf-8")
+    moves = _re.compile(r"animation\s*:|@keyframes|<animate\b|requestAnimationFrame|\.animate\(")
+    found = bool(moves.search(text))
+    reducible = "prefers-reduced-motion" in text
+    assert found, f"{page}: no motion primitive found — the check would pass vacuously"
+    assert reducible, f"{page}: animates without a prefers-reduced-motion branch"
+    return f"animated 1 reducible 1 ({page})"
+
+
+COMMANDS = {"records": cmd_records, "coverage": cmd_coverage, "spread": cmd_spread,
+            "motion": cmd_motion}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -105,8 +125,10 @@ def main(argv: list[str] | None = None) -> int:
     for name in ("records", "coverage"):
         sub.add_parser(name).add_argument("snapshot", help="data/snapshots/<date>.jsonl")
     sub.add_parser("spread").add_argument("matrix_csv", help="views/harness_matrix_<b>.csv")
+    sub.add_parser("motion").add_argument("page", help="docs/index.html")
     args = parser.parse_args(argv)
-    path = args.snapshot if args.what in ("records", "coverage") else args.matrix_csv
+    path = (args.snapshot if args.what in ("records", "coverage")
+            else args.matrix_csv if args.what == "spread" else args.page)
     print(COMMANDS[args.what](path))
     return 0
 

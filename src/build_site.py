@@ -348,6 +348,41 @@ function sortIdx(b) {
   return idx;
 }
 
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// FLIP：重排前记录每行的位置与条宽，重排后让它们从旧值过渡到新值。
+// 纯装饰 —— 移动的是同一份数据，每个数字仍是渲染出来的原值。
+function captureRows() {
+  const out = new Map();
+  document.querySelectorAll('#matrix [data-rowkey]').forEach(el => {
+    const bar = el.querySelector('.bar');
+    out.set(el.dataset.rowkey, {
+      top: el.getBoundingClientRect().top,
+      width: bar ? bar.getBoundingClientRect().width : null,
+    });
+  });
+  return out;
+}
+function animateRows(before) {
+  if (REDUCED || !before.size) return;
+  document.querySelectorAll('#matrix [data-rowkey]').forEach(el => {
+    const prev = before.get(el.dataset.rowkey);
+    if (!prev) return;
+    const dy = prev.top - el.getBoundingClientRect().top;
+    if (Math.abs(dy) > 2) {
+      el.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }],
+        { duration: 420, easing: 'cubic-bezier(.2,.7,.2,1)' });
+    }
+    const bar = el.querySelector('.bar');
+    if (bar && prev.width !== null) {
+      const w = bar.getBoundingClientRect().width;
+      if (Math.abs(w - prev.width) > 0.5) {
+        bar.animate([{ width: prev.width + 'px' }, { width: w + 'px' }],
+          { duration: 420, easing: 'cubic-bezier(.2,.7,.2,1)' });
+      }
+    }
+  });
+}
+
 function renderMatrix(b) {
   const cols = b.harnesses.map((h,j) => ({h, j, cov:b.hcov[j]}))
                           .filter(c => showAllH || c.cov >= 2);
@@ -365,7 +400,7 @@ function renderMatrix(b) {
     const n = b.n[i], best = Math.max(...vals);
     const spread = (best-Math.min(...vals)).toFixed(3);
     const rd = b.released[m] || '';
-    h += `<tr><td title="${m}">${m}</td><td class="released">${rd}</td>` + cols.map(c => {
+    h += `<tr data-rowkey="${m}"><td title="${m}">${m}</td><td class="released">${rd}</td>` + cols.map(c => {
       const v = row[c.j];
       if (v===null) return '<td class="na">·</td>';
       const isBest = v===best ? ' best' : '';
@@ -384,7 +419,7 @@ function renderHarness(b) {
   let h = '<thead><tr><th>harness</th><th class="barcell" style="text-align:left">% of model-best (avg)</th><th>wins</th><th>models</th></tr></thead><tbody>';
   b.harnessRank.forEach(([name, nm, rel, wins]) => {
     const dim = nm < 3;
-    h += `<tr${dim?' style="color:var(--dim)"':''}><td>${name}</td>
+    h += `<tr data-rowkey="h:${name}"${dim?' style="color:var(--dim)"':''}><td>${name}</td>
       <td class="barcell"><span class="bar${dim?' dim':''}" style="width:${Math.round(rel*160)}px"></span>${pct(rel)}</td>
       <td>${wins}</td><td>${nm}</td></tr>`;
   });
@@ -401,7 +436,7 @@ function renderModel(b) {
   const hi = Math.max(...rows.map(r => r[1]));
   let h = '<thead><tr><th>model</th><th>released</th><th class="barcell" style="text-align:left">best score</th><th>via harness</th><th>spread</th><th>n</th></tr></thead><tbody>';
   rows.forEach(([m, best, via, spread, n]) => {
-    h += `<tr><td title="${m}">${m}</td><td class="released">${b.released[m]||''}</td>
+    h += `<tr data-rowkey="${m}"><td title="${m}">${m}</td><td class="released">${b.released[m]||''}</td>
       <td class="barcell"><span class="bar" style="width:${Math.round(best/hi*160)}px"></span>${best.toFixed(3)}</td>
       <td>${via}</td><td class="spread${n>=3?'':' na2'}">${spread.toFixed(3)}</td><td>${n}</td></tr>`;
   });
@@ -419,7 +454,7 @@ function renderNative(b) {
   const hi = Math.max(...rows.map(r => r[1]));
   let h = '<thead><tr><th>model</th><th>released</th><th class="barcell" style="text-align:left">score</th><th>native harness</th></tr></thead><tbody>';
   rows.forEach(([m, v, via]) => {
-    h += `<tr><td title="${m}">${m}</td><td class="released">${b.released[m]||''}</td>
+    h += `<tr data-rowkey="n:${m}"><td title="${m}">${m}</td><td class="released">${b.released[m]||''}</td>
       <td class="barcell"><span class="bar" style="width:${Math.round(v/hi*160)}px"></span>${v.toFixed(3)}</td>
       <td>${via}</td></tr>`;
   });
@@ -430,6 +465,7 @@ function renderNative(b) {
 }
 
 function show(name, v) {
+  const beforeRows = captureRows();
   curName = name; view = v || view;
   names.forEach(n => document.getElementById('tab-'+n).classList.toggle('on', n===name));
   const b = D.benchmarks[name];
@@ -445,6 +481,7 @@ function show(name, v) {
   else if (view==='harness') renderHarness(b);
   else if (view==='model') renderModel(b);
   else renderMatrix(b);
+  animateRows(beforeRows);
 }
 
 document.querySelectorAll('#views button').forEach(x =>
@@ -565,6 +602,23 @@ def claims(payload: dict) -> dict:
             {"equals": f"{t['models']} models and {t['harnesses']} harnesses over {len(matrices)} benchmarks"},
         ),
     ]
+    items.append(
+        claim(
+            "reorder-animation-is-reducible",
+            "Changing the sort reorders the table with FLIP (WAAPI) and the page honours "
+            "prefers-reduced-motion — the animation only moves the same numbers.",
+            "animated and reducible",
+            "docs/index.html contains a motion primitive and a reduced-motion branch",
+            "build_site.py animates row positions and bar widths with element.animate() after a re-render; "
+            "the printed values are rendered, never tweened, and a reduced-motion media query disables it. "
+            "no evaluation is run by this project",
+            "src/build_site.py (FLIP helpers)",
+            f"{REPO}/blob/master/docs/index.html",
+            "grep -c 'prefers-reduced-motion' docs/index.html",
+            {"equals": "animated 1 reducible 1 (docs/index.html)"},
+        )
+    )
+    items[-1]["check"]["cmd"] = f"python3 {CHECKER} motion docs/index.html"
     for bench, b in matrices.items():
         spread = b["summary"].get("medianSpread")
         if spread is None:
