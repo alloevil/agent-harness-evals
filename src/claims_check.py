@@ -97,14 +97,18 @@ def cmd_spread(matrix_csv: str) -> str:
 def cmd_motion(page: str) -> str:
     """Check the page animates and can be told not to.
 
-    Covers every way this page can move — CSS animations, SVG SMIL, requestAnimationFrame and
-    WAAPI's element.animate() — and requires a reduced-motion branch wherever one is found.
+    Covers every way this page can move — CSS animations and transitions, cross-document view
+    transitions, SVG SMIL, requestAnimationFrame and WAAPI's element.animate() — and requires a
+    reduced-motion branch wherever one is found. A miss here is not a silent pass: `found` is
+    asserted, so a page that moves in a way the detector does not know about fails loudly instead
+    of looking compliant.
     """
     import pathlib as _pathlib
     import re as _re
 
     text = _pathlib.Path(page).read_text(encoding="utf-8")
-    moves = _re.compile(r"animation\s*:|@keyframes|<animate\b|requestAnimationFrame|\.animate\(")
+    moves = _re.compile(r"animation\s*:|@keyframes|<animate\b|requestAnimationFrame|\.animate\("
+                        r"|transition\s*:|@view-transition")
     found = bool(moves.search(text))
     reducible = "prefers-reduced-motion" in text
     assert found, f"{page}: no motion primitive found — the check would pass vacuously"

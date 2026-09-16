@@ -4,9 +4,16 @@ A checker that quietly agrees with whatever is published is worse than no checke
 pin the parts of src/claims_check.py that decide a number: which records count, when a board is
 cross-harness, and that a model's spread comes from the matrix cells and not from the CSV's own
 `spread`/`n` columns.
+
+The motion check gets the same treatment for the same reason: its detector decides what counts as
+moving, and a detector that has quietly lost a primitive turns "animates and is reducible" into a
+pass for pages that do neither. The primitives are enumerated below, so a page that moves in a way
+the detector does not know about is a test failure rather than a silent pass.
 """
 import csv
 import json
+
+import pytest
 
 import claims_check
 
@@ -51,3 +58,42 @@ def test_spread_comes_from_the_matrix_cells_not_the_csv_columns(tmp_path, capsys
         w.writerow(["m2", "0.2", "0.4", "0.6", "0.9", "9"])
     claims_check.main(["spread", str(matrix)])
     assert capsys.readouterr().out == "0.400 over 1 models\n"
+
+
+REDUCED = "@media (prefers-reduced-motion: reduce) { * { transition-duration: .001ms !important; } }\n"
+
+# Every way a page in this project can move. Losing one of these from the detector used to be
+# invisible: the check asserts `found`, so the failure mode is an error on a page that does animate,
+# not a pass — but it means the receipt cannot be satisfied for that page at all.
+MOTION_PRIMITIVES = [
+    ".a { animation: spin 1s linear infinite; }\n",
+    "@keyframes spin { to { transform: rotate(1turn); } }\n",
+    '<svg><animate attributeName="x" dur="1s"></animate></svg>\n',
+    "requestAnimationFrame(() => step());\n",
+    "row.animate([{ transform: 'translateY(0)' }], { duration: 200 });\n",
+    ".a { transition: color .12s; }\n",
+    "@view-transition { navigation: auto; }\n",
+]
+
+
+@pytest.mark.parametrize("primitive", MOTION_PRIMITIVES)
+def test_motion_recognises_every_primitive_it_claims_to_cover(tmp_path, capsys, primitive):
+    page = tmp_path / "index.html"
+    page.write_text(f"<html><head><style>{primitive}{REDUCED}</style></head></html>")
+    assert claims_check.main(["motion", str(page)]) == 0
+    assert capsys.readouterr().out == f"animated 1 reducible 1 ({page})\n"
+
+
+def test_motion_rejects_animation_without_a_reduced_motion_branch(tmp_path):
+    page = tmp_path / "index.html"
+    page.write_text("<html><head><style>.a { transition: color .12s; }</style></head></html>")
+    with pytest.raises(AssertionError, match="animates without a prefers-reduced-motion branch"):
+        claims_check.main(["motion", str(page)])
+
+
+def test_motion_fails_loudly_when_the_detector_finds_no_primitive(tmp_path):
+    # The anti-vacuous guard: a page that does not move cannot pass "animates and is reducible".
+    page = tmp_path / "index.html"
+    page.write_text(f"<html><head><style>{REDUCED}</style></head></html>")
+    with pytest.raises(AssertionError, match="would pass vacuously"):
+        claims_check.main(["motion", str(page)])
