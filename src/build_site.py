@@ -236,6 +236,9 @@ td.barcell { text-align:left; min-width:220px; }
 footer { color:var(--dim); font-size:.85rem; margin-top:2rem; }
 footer a { color:var(--accent); }
 @media (max-width:640px){ .tiles{grid-template-columns:1fr 1fr;} }
+
+/* Keyboard focus must remain visible even when hover is unavailable. */
+:where(a,button,input,select,summary):focus-visible { outline: 3px solid var(--accent, #58a6ff); outline-offset: 3px; }
 </style>
 <script type="application/ld+json">__JSONLD__</script>
 </head>
