@@ -2,7 +2,7 @@
 
 > agent-harness-evals is a reconciliation layer over public AI evaluation leaderboards that exposes the model x agent-harness matrix model-only leaderboards hide: which harness gets the most out of each model, and how much the harness alone moves the score.
 
-The same model does not score the same under every agent harness. This project fetches published leaderboard data (the Epoch AI Benchmarking Hub, refreshed about daily under CC-BY, plus the HAL harness leaderboards as a historical snapshot), reconciles model and harness names into one (benchmark, model, harness, score) record, and pivots the result per benchmark into a model x harness matrix with a per-model spread — best harness minus worst — so the harness contribution can be read with the model held fixed. As of 2026-09-28 it holds 6536 records over 90 benchmarks, with 41 models and 50 harnesses on 10 cross-harness boards. It runs no evaluations: every score is a third-party published number, republished with its source.
+The same model does not score the same under every agent harness. This project fetches published leaderboard data (the Epoch AI Benchmarking Hub, refreshed about daily under CC-BY, plus the HAL harness leaderboards as a historical snapshot), reconciles model and harness names into one (benchmark, model, harness, score) record, and pivots the result per benchmark into a model x harness matrix with a per-model spread — best harness minus worst — so the harness contribution can be read with the model held fixed. As of 2026-09-29 it holds 6620 records over 91 benchmarks, with 41 models and 50 harnesses on 10 cross-harness boards. It runs no evaluations: every score is a third-party published number, republished with its source.
 
 Reproduce it: `pip install -r requirements.txt && python src/fetch.py && python src/normalize.py && python src/views_harness.py && python src/build_site.py`.
 
@@ -32,6 +32,7 @@ Reproduce it: `pip install -r requirements.txt && python src/fetch.py && python 
 - [BTF3](https://alloevil.github.io/agent-harness-evals/#btf3): 2 models x 2 harnesses. Epoch agent×model board. Score = share of tasks passed.
 - [USACO](https://alloevil.github.io/agent-harness-evals/#hal_usaco): 1 model x 2 harnesses. Olympiad competitive-programming problems. (HAL)
 - [FrontierCode](https://alloevil.github.io/agent-harness-evals/#frontiercode): native-pairing board, each model under its vendor's own harness. Hard, unpublished competitive-programming-style coding tasks (Epoch board).
+- [weirdml_v3](https://alloevil.github.io/agent-harness-evals/#weirdml_v3): native-pairing board, each model under its vendor's own harness.
 - [PostTrainBench](https://alloevil.github.io/agent-harness-evals/#posttrainbench): native-pairing board, each model under its vendor's own harness. Agents fine-tune a base LLM on a target task; score reflects the post-trained model's quality.
 
 ## Source
