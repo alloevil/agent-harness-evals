@@ -13,7 +13,7 @@ jobs:
     name: published numbers still reproduce
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: alloevil/verify-claims@v0.1.1
         with:
           strict: "true"
